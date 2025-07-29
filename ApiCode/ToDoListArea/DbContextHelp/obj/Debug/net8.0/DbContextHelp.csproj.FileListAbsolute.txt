@@ -1,0 +1,15 @@
+D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\DbContextHelp\bin\Debug\net8.0\DbContextHelp.deps.json
+D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\DbContextHelp\bin\Debug\net8.0\DbContextHelp.runtimeconfig.json
+D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\DbContextHelp\bin\Debug\net8.0\DbContextHelp.dll
+D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\DbContextHelp\bin\Debug\net8.0\DbContextHelp.pdb
+D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\DbContextHelp\obj\Debug\net8.0\DbContextHelp.csproj.AssemblyReference.cache
+D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\DbContextHelp\obj\Debug\net8.0\DbContextHelp.GeneratedMSBuildEditorConfig.editorconfig
+D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\DbContextHelp\obj\Debug\net8.0\DbContextHelp.AssemblyInfoInputs.cache
+D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\DbContextHelp\obj\Debug\net8.0\DbContextHelp.AssemblyInfo.cs
+D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\DbContextHelp\obj\Debug\net8.0\DbContextHelp.csproj.CoreCompileInputs.cache
+D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\DbContextHelp\obj\Debug\net8.0\DbContextHelp.sourcelink.json
+D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\DbContextHelp\obj\Debug\net8.0\DbContextHelp.dll
+D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\DbContextHelp\obj\Debug\net8.0\refint\DbContextHelp.dll
+D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\DbContextHelp\obj\Debug\net8.0\DbContextHelp.pdb
+D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\DbContextHelp\obj\Debug\net8.0\DbContextHelp.genruntimeconfig.cache
+D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\DbContextHelp\obj\Debug\net8.0\ref\DbContextHelp.dll

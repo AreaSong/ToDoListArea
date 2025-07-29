@@ -4,14 +4,14 @@
     "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\ToDoListArea.csproj": {}
   },
   "projects": {
-    "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\ToDoListArea.csproj": {
+    "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\DbContextHelp\\DbContextHelp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\ToDoListArea.csproj",
-        "projectName": "ToDoListArea",
-        "projectPath": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\ToDoListArea.csproj",
+        "projectUniqueName": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\DbContextHelp\\DbContextHelp.csproj",
+        "projectName": "DbContextHelp",
+        "projectPath": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\DbContextHelp\\DbContextHelp.csproj",
         "packagesPath": "C:\\Users\\Area\\.nuget\\packages\\",
-        "outputPath": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\obj\\",
+        "outputPath": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\DbContextHelp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "E:\\Microsoft Visual Studio\\Shared\\NuGetPackages",
@@ -54,6 +54,103 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.Entityframeworkcore.design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.7, )"
+            },
+            "Microsoft.Entityframeworkcore.sqlserver": {
+              "target": "Package",
+              "version": "[9.0.7, )"
+            },
+            "Microsoft.Entityframeworkcore.tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.7, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\ToDoListArea.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\ToDoListArea.csproj",
+        "projectName": "ToDoListArea",
+        "projectPath": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\ToDoListArea.csproj",
+        "packagesPath": "C:\\Users\\Area\\.nuget\\packages\\",
+        "outputPath": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "E:\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Area\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "C:\\Users\\Area\\.nuget\\packages": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\DbContextHelp\\DbContextHelp.csproj": {
+                "projectPath": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\DbContextHelp\\DbContextHelp.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.Entityframeworkcore.design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.7, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.6.2, )"

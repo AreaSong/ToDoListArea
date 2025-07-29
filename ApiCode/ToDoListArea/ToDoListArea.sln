@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36109.1 d17.14
+VisualStudioVersion = 17.14.36109.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoListArea", "ToDoListArea\ToDoListArea.csproj", "{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbContextHelp", "DbContextHelp\DbContextHelp.csproj", "{65D19FB6-3BC1-41D2-9678-AD634CF29498}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65D19FB6-3BC1-41D2-9678-AD634CF29498}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65D19FB6-3BC1-41D2-9678-AD634CF29498}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65D19FB6-3BC1-41D2-9678-AD634CF29498}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65D19FB6-3BC1-41D2-9678-AD634CF29498}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
