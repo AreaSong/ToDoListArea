@@ -9,6 +9,8 @@
       "ToDoListArea/1.0.0": {
         "dependencies": {
           "DbContextHelp": "1.0.0",
+          "Microsoft.EntityFrameworkCore.SqlServer": "9.0.7",
+          "Microsoft.EntityFrameworkCore.Tools": "9.0.7",
           "Microsoft.EntityFrameworkCore.Design": "9.0.7",
           "Swashbuckle.AspNetCore": "6.6.2"
         },
@@ -492,6 +494,11 @@
             "assemblyVersion": "9.0.7.0",
             "fileVersion": "9.0.725.31607"
           }
+        }
+      },
+      "Microsoft.EntityFrameworkCore.Tools/9.0.7": {
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore.Design": "9.0.7"
         }
       },
       "Microsoft.Extensions.ApiDescription.Server/6.0.5": {},
@@ -1245,6 +1252,13 @@
       "sha512": "sha512-xNWKpPWY97Cm/+htOdlLprzaIVsZpjiBH7Bz94WqwwlpHzDMULQhT57jsvOxfgK4vphp2qWoJcmyU1mfmvlqTA==",
       "path": "microsoft.entityframeworkcore.sqlserver/9.0.7",
       "hashPath": "microsoft.entityframeworkcore.sqlserver.9.0.7.nupkg.sha512"
+    },
+    "Microsoft.EntityFrameworkCore.Tools/9.0.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-NyRRParn9vUQDkHDeWoPU1/+E+gcHTBQR4Nn5XZPxBE5t6CiXwzl3ag0a6Z2SfrGSPyDDVT39r2cz33ar2xsZg==",
+      "path": "microsoft.entityframeworkcore.tools/9.0.7",
+      "hashPath": "microsoft.entityframeworkcore.tools.9.0.7.nupkg.sha512"
     },
     "Microsoft.Extensions.ApiDescription.Server/6.0.5": {
       "type": "package",
