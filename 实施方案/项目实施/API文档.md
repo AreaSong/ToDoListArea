@@ -1,9 +1,9 @@
 ---
-**文档版本**: v1.0
+**文档版本**: v1.1
 **创建日期**: 2025-07-29
-**最后更新**: 2025-07-29
+**最后更新**: 2025-08-03
 **更新人**: AreaSong
-**变更说明**: 初始版本创建，完整API接口规范
+**变更说明**: TaskCategoryController API已实现并优化，依赖注入配置完成
 ---
 
 # 🔌 智能提醒事项Web App - API接口文档
@@ -170,7 +170,59 @@ n/v1/auth/profile` | 获取当前用户详细信息 |
 }
 ```
 
+---
 
+## 🏷️ 任务分类管理API
+
+### 核心接口概览
+
+| 接口 | 方法 | 路径 | 描述 | 状态 |
+|------|------|------|------|------|
+| 获取分类列表 | GET | `/api/TaskCategory` | 获取所有任务分类 | ✅ 已实现 |
+| 获取分类详情 | GET | `/api/TaskCategory/{id}` | 获取单个分类信息 | ✅ 已实现 |
+| 创建分类 | POST | `/api/TaskCategory` | 创建新的任务分类 | ✅ 已实现 |
+| 更新分类 | PUT | `/api/TaskCategory/{id}` | 更新分类信息 | ✅ 已实现 |
+| 删除分类 | DELETE | `/api/TaskCategory/{id}` | 删除分类（检查关联任务） | ✅ 已实现 |
+
+### 关键数据结构
+
+**分类创建请求**:
+```json
+{
+  "name": "工作",
+  "color": "#007bff",
+  "icon": "briefcase",
+  "description": "工作相关任务",
+  "sortOrder": 1
+}
+```
+
+**分类响应数据**:
+```json
+{
+  "success": true,
+  "message": "操作成功",
+  "data": {
+    "id": "502d78ae-784e-4e08-95b3-3a5affa365e3",
+    "name": "工作",
+    "color": "#007bff",
+    "icon": "briefcase",
+    "description": "工作相关任务",
+    "isSystem": true,
+    "sortOrder": 1,
+    "createdAt": "2025-07-29T20:18:41.66Z"
+  },
+  "errors": []
+}
+```
+
+### 测试验证结果 (2025-08-03)
+
+**✅ 已通过Swagger测试验证**:
+- ✅ GET `/api/TaskCategory`: 成功返回5个预设分类
+- ✅ POST `/api/TaskCategory`: 成功创建"测试分类"
+- ✅ 依赖注入配置正确，数据库操作正常
+- ✅ API响应格式统一，错误处理完善
 
 ---
 
