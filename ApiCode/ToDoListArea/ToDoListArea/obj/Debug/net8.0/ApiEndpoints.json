@@ -1,5 +1,67 @@
 [
   {
+    "ContainingType": "ToDoListArea.Controllers.DataConsistencyController",
+    "Method": "CheckDataConsistency",
+    "RelativePath": "api/DataConsistency/check",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.DataConsistencyController",
+    "Method": "FixDataConsistency",
+    "RelativePath": "api/DataConsistency/fix",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.DataConsistencyController",
+    "Method": "GetStandardOptions",
+    "RelativePath": "api/DataConsistency/options",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.DataConsistencyController",
+    "Method": "ValidatePriority",
+    "RelativePath": "api/DataConsistency/validate/priority/{priority}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "priority",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.DataConsistencyController",
+    "Method": "ValidateStatus",
+    "RelativePath": "api/DataConsistency/validate/status/{status}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "ToDoListArea.Controllers.TaskController",
     "Method": "GetTask",
     "RelativePath": "api/Task/{id}",

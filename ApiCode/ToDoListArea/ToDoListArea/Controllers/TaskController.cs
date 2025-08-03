@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using DbContextHelp.Models;
 using ToDoListArea.Models;
 
@@ -7,8 +8,15 @@ namespace ToDoListArea.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize] // 需要JWT认证
     public class TaskController : ControllerBase
     {
+        private readonly ToDoListAreaDbContext _context;
+
+        public TaskController(ToDoListAreaDbContext context)
+        {
+            _context = context;
+        }
         /// <summary>
         /// 获取任务列表
         /// </summary>
@@ -22,10 +30,8 @@ namespace ToDoListArea.Controllers
         {
             try
             {
-                using var context = new ToDoListAreaDbContext();
-
-                // 构建查询
-                var tasksQuery = context.Tasks
+                // 构建查询 
+                var tasksQuery = _context.Tasks
                     .Where(t => t.UserId == userId)
                     .AsQueryable();
 
@@ -117,9 +123,7 @@ namespace ToDoListArea.Controllers
         {
             try
             {
-                using var context = new ToDoListAreaDbContext();
-
-                var task = await context.Tasks
+                var task = await _context.Tasks
                     .Include(t => t.Category)
                     .FirstOrDefaultAsync(t => t.Id == id);
 
@@ -166,10 +170,8 @@ namespace ToDoListArea.Controllers
         {
             try
             {
-                using var context = new ToDoListAreaDbContext();
-
                 // 验证用户是否存在
-                var userExists = await context.Users.AnyAsync(u => u.Id == userId);
+                var userExists = await _context.Users.AnyAsync(u => u.Id == userId);
                 if (!userExists)
                 {
                     return BadRequest(ApiResponse<TaskResponseDto>.ErrorResult("用户不存在"));
@@ -178,7 +180,7 @@ namespace ToDoListArea.Controllers
                 // 验证分类是否存在（如果指定了分类）
                 if (createDto.CategoryId.HasValue)
                 {
-                    var categoryExists = await context.TaskCategories
+                    var categoryExists = await _context.TaskCategories
                         .AnyAsync(c => c.Id == createDto.CategoryId);
                     if (!categoryExists)
                     {
@@ -189,7 +191,7 @@ namespace ToDoListArea.Controllers
                 // 验证父任务是否存在（如果指定了父任务）
                 if (createDto.ParentTaskId.HasValue)
                 {
-                    var parentTaskExists = await context.Tasks
+                    var parentTaskExists = await _context.Tasks
                         .AnyAsync(t => t.Id == createDto.ParentTaskId && t.UserId == userId);
                     if (!parentTaskExists)
                     {
@@ -215,11 +217,11 @@ namespace ToDoListArea.Controllers
                     UpdatedAt = DateTime.UtcNow
                 };
 
-                context.Tasks.Add(task);
-                await context.SaveChangesAsync();
+                _context.Tasks.Add(task);
+                await _context.SaveChangesAsync();
 
                 // 获取创建的任务（包含关联信息）
-                var createdTask = await context.Tasks
+                var createdTask = await _context.Tasks
                     .Include(t => t.Category)
                     .FirstOrDefaultAsync(t => t.Id == task.Id);
 
@@ -262,9 +264,7 @@ namespace ToDoListArea.Controllers
         {
             try
             {
-                using var context = new ToDoListAreaDbContext();
-
-                var task = await context.Tasks.FirstOrDefaultAsync(t => t.Id == id);
+                var task = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id);
                 if (task == null)
                 {
                     return NotFound(ApiResponse<TaskResponseDto>.ErrorResult("任务不存在"));
@@ -273,7 +273,7 @@ namespace ToDoListArea.Controllers
                 // 验证分类是否存在（如果指定了分类）
                 if (updateDto.CategoryId.HasValue)
                 {
-                    var categoryExists = await context.TaskCategories
+                    var categoryExists = await _context.TaskCategories
                         .AnyAsync(c => c.Id == updateDto.CategoryId);
                     if (!categoryExists)
                     {
@@ -284,7 +284,7 @@ namespace ToDoListArea.Controllers
                 // 验证父任务是否存在（如果指定了父任务）
                 if (updateDto.ParentTaskId.HasValue)
                 {
-                    var parentTaskExists = await context.Tasks
+                    var parentTaskExists = await _context.Tasks
                         .AnyAsync(t => t.Id == updateDto.ParentTaskId && t.UserId == task.UserId);
                     if (!parentTaskExists)
                     {
@@ -324,10 +324,10 @@ namespace ToDoListArea.Controllers
                     task.ParentTaskId = updateDto.ParentTaskId;
 
                 task.UpdatedAt = DateTime.UtcNow;
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 // 获取更新后的任务（包含关联信息）
-                var updatedTask = await context.Tasks
+                var updatedTask = await _context.Tasks
                     .Include(t => t.Category)
                     .FirstOrDefaultAsync(t => t.Id == id);
 
@@ -368,25 +368,23 @@ namespace ToDoListArea.Controllers
         {
             try
             {
-                using var context = new ToDoListAreaDbContext();
-
-                var task = await context.Tasks.FirstOrDefaultAsync(t => t.Id == id);
+                var task = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id);
                 if (task == null)
                 {
                     return NotFound(ApiResponse<object>.ErrorResult("任务不存在"));
                 }
 
                 // 检查是否有子任务
-                var hasSubTasks = await context.Tasks.AnyAsync(t => t.ParentTaskId == id);
+                var hasSubTasks = await _context.Tasks.AnyAsync(t => t.ParentTaskId == id);
                 if (hasSubTasks)
                 {
                     return BadRequest(ApiResponse<object>.ErrorResult("该任务存在子任务，请先删除子任务"));
                 }
 
-                context.Tasks.Remove(task);
-                await context.SaveChangesAsync();
+                _context.Tasks.Remove(task);
+                await _context.SaveChangesAsync();
 
-                return Ok(ApiResponse<object>.SuccessResult(null, "任务删除成功"));
+                return Ok(ApiResponse<object>.SuccessResult(new object(), "任务删除成功"));
             }
             catch (Exception ex)
             {

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using DbContextHelp.Models;
 using ToDoListArea.Models;
 
@@ -7,8 +8,15 @@ namespace ToDoListArea.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize] // 需要JWT认证
     public class TaskCategoryController : ControllerBase
     {
+        private readonly ToDoListAreaDbContext _context;
+
+        public TaskCategoryController(ToDoListAreaDbContext context)
+        {
+            _context = context;
+        }
         /// <summary>
         /// 获取所有可用的任务分类
         /// </summary>
@@ -18,9 +26,7 @@ namespace ToDoListArea.Controllers
         {
             try
             {
-                using var context = new ToDoListAreaDbContext();
-
-                var categories = await context.TaskCategories
+                var categories = await _context.TaskCategories
                     .OrderBy(c => c.SortOrder)
                     .ThenBy(c => c.Name)
                     .ToListAsync();
@@ -55,9 +61,7 @@ namespace ToDoListArea.Controllers
         {
             try
             {
-                using var context = new ToDoListAreaDbContext();
-
-                var category = await context.TaskCategories
+                var category = await _context.TaskCategories
                     .FirstOrDefaultAsync(c => c.Id == id);
 
                 if (category == null)
@@ -95,10 +99,8 @@ namespace ToDoListArea.Controllers
         {
             try
             {
-                using var context = new ToDoListAreaDbContext();
-
                 // 检查分类名称是否已存在
-                var existingCategory = await context.TaskCategories
+                var existingCategory = await _context.TaskCategories
                     .FirstOrDefaultAsync(c => c.Name == createDto.Name);
 
                 if (existingCategory != null)
@@ -120,8 +122,8 @@ namespace ToDoListArea.Controllers
                     UpdatedAt = DateTime.UtcNow
                 };
 
-                context.TaskCategories.Add(category);
-                await context.SaveChangesAsync();
+                _context.TaskCategories.Add(category);
+                await _context.SaveChangesAsync();
 
                 var categoryDto = new TaskCategoryDto
                 {
@@ -155,9 +157,7 @@ namespace ToDoListArea.Controllers
         {
             try
             {
-                using var context = new ToDoListAreaDbContext();
-
-                var category = await context.TaskCategories.FirstOrDefaultAsync(c => c.Id == id);
+                var category = await _context.TaskCategories.FirstOrDefaultAsync(c => c.Id == id);
                 if (category == null)
                 {
                     return NotFound(ApiResponse<TaskCategoryDto>.ErrorResult("分类不存在"));
@@ -172,7 +172,7 @@ namespace ToDoListArea.Controllers
                 // 检查分类名称是否已存在（排除当前分类）
                 if (!string.IsNullOrEmpty(updateDto.Name) && updateDto.Name != category.Name)
                 {
-                    var existingCategory = await context.TaskCategories
+                    var existingCategory = await _context.TaskCategories
                         .FirstOrDefaultAsync(c => c.Name == updateDto.Name && c.Id != id);
 
                     if (existingCategory != null)
@@ -198,7 +198,7 @@ namespace ToDoListArea.Controllers
                     category.SortOrder = updateDto.SortOrder.Value;
 
                 category.UpdatedAt = DateTime.UtcNow;
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 var categoryDto = new TaskCategoryDto
                 {
@@ -230,9 +230,7 @@ namespace ToDoListArea.Controllers
         {
             try
             {
-                using var context = new ToDoListAreaDbContext();
-
-                var category = await context.TaskCategories.FirstOrDefaultAsync(c => c.Id == id);
+                var category = await _context.TaskCategories.FirstOrDefaultAsync(c => c.Id == id);
                 if (category == null)
                 {
                     return NotFound(ApiResponse<object>.ErrorResult("分类不存在"));
@@ -245,16 +243,16 @@ namespace ToDoListArea.Controllers
                 }
 
                 // 检查是否有关联的任务
-                var hasRelatedTasks = await context.Tasks.AnyAsync(t => t.CategoryId == id);
+                var hasRelatedTasks = await _context.Tasks.AnyAsync(t => t.CategoryId == id);
                 if (hasRelatedTasks)
                 {
                     return BadRequest(ApiResponse<object>.ErrorResult("该分类下存在任务，无法删除"));
                 }
 
-                context.TaskCategories.Remove(category);
-                await context.SaveChangesAsync();
+                _context.TaskCategories.Remove(category);
+                await _context.SaveChangesAsync();
 
-                return Ok(ApiResponse<object>.SuccessResult(null, "分类删除成功"));
+                return Ok(ApiResponse<object>.SuccessResult(new object(), "分类删除成功"));
             }
             catch (Exception ex)
             {

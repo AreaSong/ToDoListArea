@@ -1,10 +1,90 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "ToDoListArea",
-    "version": "1.0"
+    "title": "ToDoListArea API",
+    "version": "v1"
   },
   "paths": {
+    "/api/DataConsistency/check": {
+      "get": {
+        "tags": [
+          "DataConsistency"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/DataConsistency/fix": {
+      "post": {
+        "tags": [
+          "DataConsistency"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/DataConsistency/options": {
+      "get": {
+        "tags": [
+          "DataConsistency"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/DataConsistency/validate/status/{status}": {
+      "get": {
+        "tags": [
+          "DataConsistency"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/DataConsistency/validate/priority/{priority}": {
+      "get": {
+        "tags": [
+          "DataConsistency"
+        ],
+        "parameters": [
+          {
+            "name": "priority",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Task/user/{userId}": {
       "get": {
         "tags": [
@@ -1417,6 +1497,19 @@
         },
         "additionalProperties": false
       }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "apiKey",
+        "description": "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        "name": "Authorization",
+        "in": "header"
+      }
     }
-  }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
 }

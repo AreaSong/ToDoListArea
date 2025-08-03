@@ -38,25 +38,31 @@ export interface LoginResponse {
   expiresAt: string;
 }
 
-// 任务状态枚举
-export type TaskStatus = 'Pending' | 'InProgress' | 'Completed';
+// 任务状态枚举（与后端TodoTaskStatus对应）
+export type TodoTaskStatus = 'Pending' | 'InProgress' | 'Completed';
 
-// 任务优先级枚举
-export type TaskPriority = 'Low' | 'Medium' | 'High';
+// 任务优先级枚举（与后端TodoTaskPriority对应）
+export type TodoTaskPriority = 'Low' | 'Medium' | 'High';
 
 // 状态显示映射
-export const TaskStatusLabels: Record<TaskStatus, string> = {
+export const TodoTaskStatusLabels: Record<TodoTaskStatus, string> = {
   'Pending': '待处理',
   'InProgress': '进行中',
   'Completed': '已完成'
 };
 
 // 优先级显示映射
-export const TaskPriorityLabels: Record<TaskPriority, string> = {
+export const TodoTaskPriorityLabels: Record<TodoTaskPriority, string> = {
   'Low': '低',
   'Medium': '中',
   'High': '高'
 };
+
+// 为了向后兼容，保留旧的类型别名
+export type TaskStatus = TodoTaskStatus;
+export type TaskPriority = TodoTaskPriority;
+export const TaskStatusLabels = TodoTaskStatusLabels;
+export const TaskPriorityLabels = TodoTaskPriorityLabels;
 
 // 任务相关类型
 export interface Task {
@@ -66,8 +72,8 @@ export interface Task {
   categoryId?: string;
   title: string;
   description?: string;
-  status: TaskStatus;
-  priority: TaskPriority;
+  status: TodoTaskStatus;
+  priority: TodoTaskPriority;
   startTime?: string;
   endTime?: string;
   estimatedDuration?: number;

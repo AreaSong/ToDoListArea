@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Card, Typography, Button, Space, message } from 'antd';
-import { ArrowLeftOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Layout, Card, Typography, Button, Space, message, Modal, Form, Input, Select, DatePicker, Statistic, Row, Col, Result } from 'antd';
+import { ArrowLeftOutlined, ReloadOutlined, PlusOutlined, CheckCircleOutlined, ClockCircleOutlined, ExclamationCircleOutlined, FileTextOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { Gantt, ViewMode } from 'gantt-task-react';
 import type { Task as GanttTask } from 'gantt-task-react';
@@ -15,6 +15,8 @@ const GanttPage: React.FC = () => {
   const [ganttTasks, setGanttTasks] = useState<GanttTask[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.Day);
   const [loading, setLoading] = useState(false);
+  const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [form] = Form.useForm();
   const navigate = useNavigate();
 
   // 获取当前用户信息
@@ -22,18 +24,42 @@ const GanttPage: React.FC = () => {
 
   // 将API任务数据转换为甘特图格式
   const convertToGanttTasks = (tasks: ApiTask[]): GanttTask[] => {
-    return tasks.map((task) => {
-      // 如果任务没有开始时间，设置为今天
-      const startDate = task.startTime ? new Date(task.startTime) : new Date();
-      
-      // 如果任务没有结束时间，根据预计时长计算
+    if (!tasks || tasks.length === 0) {
+      return [];
+    }
+
+    return tasks.map((task, index) => {
+      // 确保任务有有效的开始时间
+      let startDate: Date;
+      if (task.startTime) {
+        startDate = new Date(task.startTime);
+        // 验证日期是否有效
+        if (isNaN(startDate.getTime())) {
+          startDate = new Date();
+        }
+      } else {
+        // 如果没有开始时间，设置为今天加上索引天数，避免重叠
+        startDate = new Date();
+        startDate.setDate(startDate.getDate() + index);
+      }
+
+      // 确保任务有有效的结束时间
       let endDate: Date;
       if (task.endTime) {
         endDate = new Date(task.endTime);
-      } else if (task.estimatedDuration) {
+        // 验证日期是否有效
+        if (isNaN(endDate.getTime())) {
+          endDate = new Date(startDate.getTime() + 24 * 60 * 60 * 1000);
+        }
+      } else if (task.estimatedDuration && task.estimatedDuration > 0) {
         endDate = new Date(startDate.getTime() + task.estimatedDuration * 60 * 1000);
       } else {
         // 默认1天
+        endDate = new Date(startDate.getTime() + 24 * 60 * 60 * 1000);
+      }
+
+      // 确保结束时间不早于开始时间
+      if (endDate <= startDate) {
         endDate = new Date(startDate.getTime() + 24 * 60 * 60 * 1000);
       }
 
@@ -48,16 +74,16 @@ const GanttPage: React.FC = () => {
       return {
         start: startDate,
         end: endDate,
-        name: task.title,
+        name: task.title || `任务 ${index + 1}`,
         id: task.id,
         type: 'task' as const,
         progress: progress,
         isDisabled: false,
         styles: {
-          progressColor: getProgressColor(task.priority),
-          progressSelectedColor: getProgressSelectedColor(task.priority),
-          backgroundColor: getBackgroundColor(task.status),
-          backgroundSelectedColor: getBackgroundSelectedColor(task.status),
+          progressColor: getProgressColor(task.priority || 'Medium'),
+          progressSelectedColor: getProgressSelectedColor(task.priority || 'Medium'),
+          backgroundColor: getBackgroundColor(task.status || 'Pending'),
+          backgroundSelectedColor: getBackgroundSelectedColor(task.status || 'Pending'),
         },
       };
     });
@@ -103,8 +129,12 @@ const GanttPage: React.FC = () => {
 
   // 获取任务数据
   const fetchTasks = async () => {
-    if (!currentUser.id) return;
-    
+    if (!currentUser.id) {
+      message.warning('请先登录后再使用甘特图功能');
+      navigate('/login');
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await taskApi.getTasks(currentUser.id, {
@@ -117,26 +147,79 @@ const GanttPage: React.FC = () => {
       if (response.success && response.data) {
         const ganttData = convertToGanttTasks(response.data.items);
         setGanttTasks(ganttData);
+
+        if (ganttData.length === 0) {
+          console.log('没有找到任务数据，显示空状态');
+        } else {
+          console.log(`成功加载 ${ganttData.length} 个任务到甘特图`);
+        }
+      } else {
+        message.error(response.message || '获取任务数据失败');
+        setGanttTasks([]);
       }
     } catch (error) {
-      message.error('获取任务数据失败');
+      console.error('获取任务数据失败:', error);
+      message.error('获取任务数据失败，请检查网络连接');
+      setGanttTasks([]);
     } finally {
       setLoading(false);
     }
   };
 
   // 处理任务日期变更
-  const handleTaskChange = (task: GanttTask) => {
-    console.log('Task changed:', task);
-    // TODO: 调用API更新任务时间
-    message.info('任务时间已更新');
+  const handleTaskChange = async (task: GanttTask) => {
+    try {
+      const response = await taskApi.updateTask(task.id, {
+        startTime: task.start.toISOString(),
+        endTime: task.end.toISOString(),
+      });
+
+      if (response.success) {
+        message.success('任务时间已更新');
+        // 更新本地状态
+        setGanttTasks(prev =>
+          prev.map(t => t.id === task.id ? task : t)
+        );
+      } else {
+        message.error('任务时间更新失败');
+        // 重新获取数据以恢复原状态
+        fetchTasks();
+      }
+    } catch (error) {
+      message.error('任务时间更新失败');
+      fetchTasks();
+    }
   };
 
   // 处理任务进度变更
-  const handleProgressChange = (task: GanttTask) => {
-    console.log('Progress changed:', task);
-    // TODO: 调用API更新任务进度
-    message.info('任务进度已更新');
+  const handleProgressChange = async (task: GanttTask) => {
+    try {
+      // 根据进度计算状态
+      let status = 'Pending';
+      if (task.progress === 100) {
+        status = 'Completed';
+      } else if (task.progress > 0) {
+        status = 'InProgress';
+      }
+
+      const response = await taskApi.updateTask(task.id, {
+        status: status,
+      });
+
+      if (response.success) {
+        message.success('任务进度已更新');
+        // 更新本地状态
+        setGanttTasks(prev =>
+          prev.map(t => t.id === task.id ? task : t)
+        );
+      } else {
+        message.error('任务进度更新失败');
+        fetchTasks();
+      }
+    } catch (error) {
+      message.error('任务进度更新失败');
+      fetchTasks();
+    }
   };
 
   // 处理任务点击
@@ -150,6 +233,31 @@ const GanttPage: React.FC = () => {
     console.log('Task double clicked:', task);
     // 跳转回任务管理页面并编辑该任务
     navigate('/dashboard');
+  };
+
+  // 创建新任务
+  const handleCreateTask = async (values: any) => {
+    try {
+      const response = await taskApi.createTask(currentUser.id, {
+        title: values.title,
+        description: values.description,
+        status: values.status || 'Pending',
+        priority: values.priority || 'Medium',
+        startTime: values.startTime?.toISOString(),
+        endTime: values.endTime?.toISOString(),
+      });
+
+      if (response.success) {
+        message.success('任务创建成功');
+        setCreateModalVisible(false);
+        form.resetFields();
+        fetchTasks(); // 重新获取数据
+      } else {
+        message.error('任务创建失败');
+      }
+    } catch (error) {
+      message.error('任务创建失败');
+    }
   };
 
   useEffect(() => {
@@ -180,9 +288,16 @@ const GanttPage: React.FC = () => {
         </Space>
         
         <Space>
-          <Button 
-            type="text" 
-            icon={<ReloadOutlined />} 
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setCreateModalVisible(true)}
+          >
+            新建任务
+          </Button>
+          <Button
+            type="text"
+            icon={<ReloadOutlined />}
             onClick={fetchTasks}
             loading={loading}
           >
@@ -212,9 +327,59 @@ const GanttPage: React.FC = () => {
       </Header>
 
       <Content style={{ padding: '24px' }}>
+        {/* 统计信息面板 */}
+        <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+          <Col xs={12} sm={12} md={6} lg={6}>
+            <Card size="small">
+              <Statistic
+                title="总任务数"
+                value={ganttTasks.length}
+                prefix={<ExclamationCircleOutlined />}
+                valueStyle={{ fontSize: '20px' }}
+              />
+            </Card>
+          </Col>
+          <Col xs={12} sm={12} md={6} lg={6}>
+            <Card size="small">
+              <Statistic
+                title="已完成"
+                value={ganttTasks.filter(t => t.progress === 100).length}
+                prefix={<CheckCircleOutlined />}
+                valueStyle={{ color: '#3f8600', fontSize: '20px' }}
+              />
+            </Card>
+          </Col>
+          <Col xs={12} sm={12} md={6} lg={6}>
+            <Card size="small">
+              <Statistic
+                title="进行中"
+                value={ganttTasks.filter(t => t.progress > 0 && t.progress < 100).length}
+                prefix={<ClockCircleOutlined />}
+                valueStyle={{ color: '#faad14', fontSize: '20px' }}
+              />
+            </Card>
+          </Col>
+          <Col xs={12} sm={12} md={6} lg={6}>
+            <Card size="small">
+              <Statistic
+                title="完成率"
+                value={ganttTasks.length > 0 ? Math.round((ganttTasks.filter(t => t.progress === 100).length / ganttTasks.length) * 100) : 0}
+                suffix="%"
+                valueStyle={{ color: '#1890ff', fontSize: '20px' }}
+              />
+            </Card>
+          </Col>
+        </Row>
+
         <Card>
           {ganttTasks.length > 0 ? (
-            <div style={{ height: '600px', overflow: 'auto' }}>
+            <div style={{
+              height: '600px',
+              overflow: 'auto',
+              border: '1px solid #f0f0f0',
+              borderRadius: '6px',
+              backgroundColor: '#fafafa'
+            }}>
               <Gantt
                 tasks={ganttTasks}
                 viewMode={viewMode}
@@ -222,18 +387,141 @@ const GanttPage: React.FC = () => {
                 onProgressChange={handleProgressChange}
                 onClick={handleTaskClick}
                 onDoubleClick={handleTaskDoubleClick}
+                listCellWidth="200px"
+                columnWidth={viewMode === ViewMode.Day ? 65 : viewMode === ViewMode.Week ? 250 : 300}
               />
             </div>
           ) : (
-            <div style={{ 
-              textAlign: 'center', 
-              padding: '60px 0',
-              color: '#999'
-            }}>
-              {loading ? '正在加载任务数据...' : '暂无任务数据，请先在任务管理页面创建任务'}
+            <div style={{ padding: '40px 0' }}>
+              {loading ? (
+                <div style={{ textAlign: 'center' }}>
+                  <Space direction="vertical" size="large">
+                    <div style={{ fontSize: '16px', color: '#666' }}>正在加载任务数据...</div>
+                    <div style={{ fontSize: '12px', color: '#999' }}>
+                      正在从服务器获取您的任务信息
+                    </div>
+                  </Space>
+                </div>
+              ) : (
+                <Result
+                  icon={<FileTextOutlined style={{ color: '#1890ff' }} />}
+                  title="暂无任务数据"
+                  subTitle={
+                    <div>
+                      <p>您还没有创建任何任务，创建第一个任务来开始使用甘特图功能吧！</p>
+                      <p style={{ fontSize: '12px', color: '#999', marginTop: '8px' }}>
+                        甘特图可以帮助您可视化任务时间线，拖拽调整时间和进度
+                      </p>
+                    </div>
+                  }
+                  extra={[
+                    <Button
+                      type="primary"
+                      key="create"
+                      icon={<PlusOutlined />}
+                      onClick={() => setCreateModalVisible(true)}
+                      size="large"
+                    >
+                      创建第一个任务
+                    </Button>,
+                    <Button
+                      key="dashboard"
+                      onClick={() => navigate('/dashboard')}
+                      size="large"
+                    >
+                      前往任务管理
+                    </Button>,
+                  ]}
+                />
+              )}
             </div>
           )}
         </Card>
+
+        {/* 创建任务模态框 */}
+        <Modal
+          title="新建任务"
+          open={createModalVisible}
+          onCancel={() => {
+            setCreateModalVisible(false);
+            form.resetFields();
+          }}
+          footer={null}
+          width={500}
+        >
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleCreateTask}
+          >
+            <Form.Item
+              name="title"
+              label="任务标题"
+              rules={[{ required: true, message: '请输入任务标题' }]}
+            >
+              <Input placeholder="请输入任务标题" />
+            </Form.Item>
+
+            <Form.Item
+              name="description"
+              label="任务描述"
+            >
+              <Input.TextArea rows={3} placeholder="请输入任务描述" />
+            </Form.Item>
+
+            <Form.Item
+              name="status"
+              label="任务状态"
+              initialValue="Pending"
+            >
+              <Select>
+                <Select.Option value="Pending">待处理</Select.Option>
+                <Select.Option value="InProgress">进行中</Select.Option>
+                <Select.Option value="Completed">已完成</Select.Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              name="priority"
+              label="优先级"
+              initialValue="Medium"
+            >
+              <Select>
+                <Select.Option value="High">高</Select.Option>
+                <Select.Option value="Medium">中</Select.Option>
+                <Select.Option value="Low">低</Select.Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              name="startTime"
+              label="开始时间"
+            >
+              <DatePicker showTime style={{ width: '100%' }} />
+            </Form.Item>
+
+            <Form.Item
+              name="endTime"
+              label="结束时间"
+            >
+              <DatePicker showTime style={{ width: '100%' }} />
+            </Form.Item>
+
+            <Form.Item>
+              <Space>
+                <Button type="primary" htmlType="submit">
+                  创建任务
+                </Button>
+                <Button onClick={() => {
+                  setCreateModalVisible(false);
+                  form.resetFields();
+                }}>
+                  取消
+                </Button>
+              </Space>
+            </Form.Item>
+          </Form>
+        </Modal>
       </Content>
     </Layout>
   );

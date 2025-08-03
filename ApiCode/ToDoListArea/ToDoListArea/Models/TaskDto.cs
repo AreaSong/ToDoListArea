@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using ToDoListArea.Enums;
+using ToDoListArea.Attributes;
 
 namespace ToDoListArea.Models
 {
@@ -15,9 +17,11 @@ namespace ToDoListArea.Models
         public string? Description { get; set; }
 
         [Required(ErrorMessage = "任务状态不能为空")]
+        [ValidTaskStatus]
         public string Status { get; set; } = "Pending";
 
         [Required(ErrorMessage = "任务优先级不能为空")]
+        [ValidTaskPriority]
         public string Priority { get; set; } = "Medium";
 
         public DateTime? StartTime { get; set; }
@@ -38,7 +42,10 @@ namespace ToDoListArea.Models
         [StringLength(1000, ErrorMessage = "任务描述长度不能超过1000个字符")]
         public string? Description { get; set; }
 
+        [ValidTaskStatus]
         public string? Status { get; set; }
+
+        [ValidTaskPriority]
         public string? Priority { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }

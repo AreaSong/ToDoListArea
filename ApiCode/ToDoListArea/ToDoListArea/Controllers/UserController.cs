@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using DbContextHelp.Models;
 using ToDoListArea.Models;
 using ToDoListArea.Utils;
+using ToDoListArea.Services;
 
 namespace ToDoListArea.Controllers
 {
@@ -10,6 +12,14 @@ namespace ToDoListArea.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
+        private readonly ToDoListAreaDbContext _context;
+        private readonly IJwtService _jwtService;
+
+        public UserController(ToDoListAreaDbContext context, IJwtService jwtService)
+        {
+            _context = context;
+            _jwtService = jwtService;
+        }
         /// <summary>
         /// 用户注册
         /// </summary>
@@ -20,10 +30,8 @@ namespace ToDoListArea.Controllers
         {
             try
             {
-                using var context = new ToDoListAreaDbContext();
-
                 // 检查邮箱是否已存在
-                var existingUser = await context.Users
+                var existingUser = await _context.Users
                     .FirstOrDefaultAsync(u => u.Email == registerDto.Email);
 
                 if (existingUser != null)
@@ -46,8 +54,8 @@ namespace ToDoListArea.Controllers
                     UpdatedAt = DateTime.UtcNow
                 };
 
-                context.Users.Add(user);
-                await context.SaveChangesAsync();
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
 
                 // 返回用户信息
                 var userProfile = new UserProfileDto
@@ -81,10 +89,8 @@ namespace ToDoListArea.Controllers
         {
             try
             {
-                using var context = new ToDoListAreaDbContext();
-
                 // 查找用户
-                var user = await context.Users
+                var user = await _context.Users
                     .FirstOrDefaultAsync(u => u.Email == loginDto.Email);
 
                 if (user == null)
@@ -107,10 +113,10 @@ namespace ToDoListArea.Controllers
                 // 更新最后登录时间
                 user.LastLoginAt = DateTime.UtcNow;
                 user.UpdatedAt = DateTime.UtcNow;
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
-                // 生成简单的Token（实际项目中应使用JWT）
-                var token = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes($"{user.Id}:{DateTime.UtcNow.Ticks}"));
+                // 生成JWT Token
+                var token = _jwtService.GenerateToken(user);
 
                 var userProfile = new UserProfileDto
                 {
@@ -130,7 +136,7 @@ namespace ToDoListArea.Controllers
                 {
                     Token = token,
                     User = userProfile,
-                    ExpiresAt = DateTime.UtcNow.AddDays(7)
+                    ExpiresAt = DateTime.UtcNow.AddMinutes(60) // 与JWT设置中的ExpiryInMinutes一致
                 };
 
                 return Ok(ApiResponse<LoginResponseDto>.SuccessResult(loginResponse, "登录成功"));
@@ -147,13 +153,12 @@ namespace ToDoListArea.Controllers
         /// <param name="userId">用户ID</param>
         /// <returns>用户信息</returns>
         [HttpGet("profile/{userId}")]
+        [Authorize] // 需要JWT认证
         public async Task<ActionResult<ApiResponse<UserProfileDto>>> GetProfile(Guid userId)
         {
             try
             {
-                using var context = new ToDoListAreaDbContext();
-
-                var user = await context.Users
+                var user = await _context.Users
                     .FirstOrDefaultAsync(u => u.Id == userId);
 
                 if (user == null)
@@ -190,13 +195,12 @@ namespace ToDoListArea.Controllers
         /// <param name="updateDto">更新信息</param>
         /// <returns>更新结果</returns>
         [HttpPut("profile/{userId}")]
+        [Authorize] // 需要JWT认证
         public async Task<ActionResult<ApiResponse<UserProfileDto>>> UpdateProfile(Guid userId, [FromBody] UserUpdateDto updateDto)
         {
             try
             {
-                using var context = new ToDoListAreaDbContext();
-
-                var user = await context.Users
+                var user = await _context.Users
                     .FirstOrDefaultAsync(u => u.Id == userId);
 
                 if (user == null)
@@ -215,7 +219,7 @@ namespace ToDoListArea.Controllers
                     user.AvatarUrl = updateDto.AvatarUrl;
 
                 user.UpdatedAt = DateTime.UtcNow;
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 var userProfile = new UserProfileDto
                 {

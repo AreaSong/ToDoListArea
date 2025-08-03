@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Layout, 
-  Card, 
-  Button, 
-  Table, 
-  Tag, 
-  Space, 
-  Modal, 
-  Form, 
-  Input, 
-  Select, 
-  DatePicker, 
+import {
+  Layout,
+  Card,
+  Button,
+  Table,
+  Tag,
+  Space,
+  Modal,
+  Form,
+  Input,
+  Select,
+  DatePicker,
   message,
   Typography,
   Avatar,
   Dropdown,
+  Empty,
   type MenuProps
 } from 'antd';
 import {
@@ -30,7 +31,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { taskApi, categoryApi } from '../services/api';
 import type { Task, TaskCreateDto, TaskCategory, User, TaskStatus, TaskPriority } from '../types/api';
-import { TaskStatusLabels, TaskPriorityLabels } from '../types/api';
+import { TaskPriorityLabels } from '../types/api';
 import dayjs from 'dayjs';
 
 const { Header, Content } = Layout;
@@ -44,10 +45,25 @@ const DashboardPage: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [form] = Form.useForm();
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('');
+  const [priorityFilter, setPriorityFilter] = useState<string>('');
+  const [categoryFilter, setCategoryFilter] = useState<string>('');
   const navigate = useNavigate();
 
   // 获取当前用户信息
   const currentUser: User = JSON.parse(localStorage.getItem('user') || '{}');
+
+  // 页面加载时获取数据
+  useEffect(() => {
+    fetchTasks();
+    fetchCategories();
+  }, []);
+
+  // 过滤器变化时重新获取数据
+  useEffect(() => {
+    fetchTasks();
+  }, [statusFilter, priorityFilter, categoryFilter]);
 
   // 用户菜单
   const userMenuItems: MenuProps['items'] = [
@@ -76,14 +92,18 @@ const DashboardPage: React.FC = () => {
   // 获取任务列表
   const fetchTasks = async () => {
     if (!currentUser.id) return;
-    
+
     setLoading(true);
     try {
       const response = await taskApi.getTasks(currentUser.id, {
         pageNumber: 1,
         pageSize: 50,
         sortBy: 'CreatedAt',
-        sortOrder: 'desc'
+        sortOrder: 'desc',
+        searchKeyword: searchKeyword || undefined,
+        status: statusFilter || undefined,
+        priority: priorityFilter || undefined,
+        categoryId: categoryFilter || undefined
       });
 
       if (response.success && response.data) {
@@ -188,6 +208,19 @@ const DashboardPage: React.FC = () => {
     setModalVisible(true);
   };
 
+  // 快速切换任务状态
+  const handleStatusChange = async (taskId: string, newStatus: TaskStatus) => {
+    try {
+      const response = await taskApi.updateTask(taskId, { status: newStatus });
+      if (response.success) {
+        message.success('状态更新成功');
+        fetchTasks();
+      }
+    } catch (error) {
+      message.error('状态更新失败');
+    }
+  };
+
   // 获取优先级标签颜色
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -220,10 +253,23 @@ const DashboardPage: React.FC = () => {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      render: (status: TaskStatus) => (
-        <Tag color={getStatusColor(status)}>
-          {TaskStatusLabels[status]}
-        </Tag>
+      render: (status: TaskStatus, record: Task) => (
+        <Select
+          value={status}
+          style={{ width: 100 }}
+          size="small"
+          onChange={(newStatus) => handleStatusChange(record.id, newStatus)}
+        >
+          <Option value="Pending">
+            <Tag color={getStatusColor('Pending')}>待处理</Tag>
+          </Option>
+          <Option value="InProgress">
+            <Tag color={getStatusColor('InProgress')}>进行中</Tag>
+          </Option>
+          <Option value="Completed">
+            <Tag color={getStatusColor('Completed')}>已完成</Tag>
+          </Option>
+        </Select>
       ),
     },
     {
@@ -324,6 +370,60 @@ const DashboardPage: React.FC = () => {
             </Space>
           </div>
 
+          {/* 搜索和过滤器 */}
+          <div style={{ marginBottom: 16, padding: '16px', background: '#fafafa', borderRadius: '6px' }}>
+            <Space wrap size="middle">
+              <Input.Search
+                placeholder="搜索任务标题或描述"
+                style={{ width: 250 }}
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                onSearch={fetchTasks}
+                allowClear
+              />
+
+              <Select
+                placeholder="状态筛选"
+                style={{ width: 120 }}
+                value={statusFilter}
+                onChange={setStatusFilter}
+                allowClear
+              >
+                <Option value="Pending">待处理</Option>
+                <Option value="InProgress">进行中</Option>
+                <Option value="Completed">已完成</Option>
+              </Select>
+
+              <Select
+                placeholder="优先级筛选"
+                style={{ width: 120 }}
+                value={priorityFilter}
+                onChange={setPriorityFilter}
+                allowClear
+              >
+                <Option value="High">高</Option>
+                <Option value="Medium">中</Option>
+                <Option value="Low">低</Option>
+              </Select>
+
+              <Select
+                placeholder="分类筛选"
+                style={{ width: 150 }}
+                value={categoryFilter}
+                onChange={setCategoryFilter}
+                allowClear
+              >
+                {categories.map(category => (
+                  <Option key={category.id} value={category.id}>
+                    {category.name}
+                  </Option>
+                ))}
+              </Select>
+
+              <Button onClick={fetchTasks}>刷新</Button>
+            </Space>
+          </div>
+
           <Table
             columns={columns}
             dataSource={tasks}
@@ -334,6 +434,26 @@ const DashboardPage: React.FC = () => {
               showSizeChanger: true,
               showQuickJumper: true,
               showTotal: (total) => `共 ${total} 条记录`,
+            }}
+            locale={{
+              emptyText: (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description={
+                    <span>
+                      暂无任务数据
+                      <br />
+                      <Button
+                        type="link"
+                        onClick={handleCreate}
+                        style={{ padding: 0 }}
+                      >
+                        创建第一个任务
+                      </Button>
+                    </span>
+                  }
+                />
+              )
             }}
           />
         </Card>
