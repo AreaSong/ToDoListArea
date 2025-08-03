@@ -17,18 +17,20 @@ import {
   Dropdown,
   type MenuProps
 } from 'antd';
-import { 
-  PlusOutlined, 
-  EditOutlined, 
-  DeleteOutlined, 
+import {
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
   UserOutlined,
   LogoutOutlined,
   SettingOutlined,
-  BellOutlined
+  BellOutlined,
+  BarChartOutlined
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { taskApi, categoryApi } from '../services/api';
-import type { Task, TaskCreateDto, TaskCategory, User } from '../types/api';
+import type { Task, TaskCreateDto, TaskCategory, User, TaskStatus, TaskPriority } from '../types/api';
+import { TaskStatusLabels, TaskPriorityLabels } from '../types/api';
 import dayjs from 'dayjs';
 
 const { Header, Content } = Layout;
@@ -218,10 +220,9 @@ const DashboardPage: React.FC = () => {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      render: (status: string) => (
+      render: (status: TaskStatus) => (
         <Tag color={getStatusColor(status)}>
-          {status === 'Completed' ? '已完成' : 
-           status === 'InProgress' ? '进行中' : '待处理'}
+          {TaskStatusLabels[status]}
         </Tag>
       ),
     },
@@ -229,10 +230,9 @@ const DashboardPage: React.FC = () => {
       title: '优先级',
       dataIndex: 'priority',
       key: 'priority',
-      render: (priority: string) => (
+      render: (priority: TaskPriority) => (
         <Tag color={getPriorityColor(priority)}>
-          {priority === 'High' ? '高' : 
-           priority === 'Medium' ? '中' : '低'}
+          {TaskPriorityLabels[priority]}
         </Tag>
       ),
     },
@@ -307,13 +307,21 @@ const DashboardPage: React.FC = () => {
         <Card>
           <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
             <Title level={4}>任务列表</Title>
-            <Button 
-              type="primary" 
-              icon={<PlusOutlined />} 
-              onClick={handleCreate}
-            >
-              新建任务
-            </Button>
+            <Space>
+              <Button
+                icon={<BarChartOutlined />}
+                onClick={() => navigate('/gantt')}
+              >
+                甘特图
+              </Button>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={handleCreate}
+              >
+                新建任务
+              </Button>
+            </Space>
           </div>
 
           <Table

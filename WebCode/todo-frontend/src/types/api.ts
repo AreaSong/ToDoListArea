@@ -38,6 +38,26 @@ export interface LoginResponse {
   expiresAt: string;
 }
 
+// 任务状态枚举
+export type TaskStatus = 'Pending' | 'InProgress' | 'Completed';
+
+// 任务优先级枚举
+export type TaskPriority = 'Low' | 'Medium' | 'High';
+
+// 状态显示映射
+export const TaskStatusLabels: Record<TaskStatus, string> = {
+  'Pending': '待处理',
+  'InProgress': '进行中',
+  'Completed': '已完成'
+};
+
+// 优先级显示映射
+export const TaskPriorityLabels: Record<TaskPriority, string> = {
+  'Low': '低',
+  'Medium': '中',
+  'High': '高'
+};
+
 // 任务相关类型
 export interface Task {
   id: string;
@@ -46,8 +66,8 @@ export interface Task {
   categoryId?: string;
   title: string;
   description?: string;
-  status: string;
-  priority: string;
+  status: TaskStatus;
+  priority: TaskPriority;
   startTime?: string;
   endTime?: string;
   estimatedDuration?: number;

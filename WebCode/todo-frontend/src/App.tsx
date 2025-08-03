@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import ProfilePage from './pages/ProfilePage';
+import SimpleGanttPage from './pages/SimpleGanttPage';
 import './App.css';
 
 // 简单的认证检查
@@ -16,7 +17,21 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
 const App: React.FC = () => {
   return (
-    <ConfigProvider locale={zhCN}>
+    <ConfigProvider
+      locale={zhCN}
+      theme={{
+        token: {
+          fontSize: 14,
+          borderRadius: 6,
+        },
+        components: {
+          Layout: {
+            bodyBg: '#f5f5f5',
+            headerBg: '#ffffff',
+          },
+        },
+      }}
+    >
       <Router>
         <div className="App">
           <Routes>
@@ -38,6 +53,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/gantt"
+              element={
+                <ProtectedRoute>
+                  <SimpleGanttPage />
                 </ProtectedRoute>
               }
             />
