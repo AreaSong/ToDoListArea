@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{65D19FB6-3BC1-41D2-9678-AD634CF29498}|DbContextHelp\\DbContextHelp.csproj|d:\\indexes\\desktop\\todolistarea\\apicode\\todolistarea\\dbcontexthelp\\models\\taskdependency.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{65D19FB6-3BC1-41D2-9678-AD634CF29498}|DbContextHelp\\DbContextHelp.csproj|solutionrelative:dbcontexthelp\\models\\taskdependency.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{65D19FB6-3BC1-41D2-9678-AD634CF29498}|DbContextHelp\\DbContextHelp.csproj|d:\\indexes\\desktop\\todolistarea\\apicode\\todolistarea\\dbcontexthelp\\models\\systemlog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{65D19FB6-3BC1-41D2-9678-AD634CF29498}|DbContextHelp\\DbContextHelp.csproj|solutionrelative:dbcontexthelp\\models\\systemlog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|d:\\indexes\\desktop\\todolistarea\\apicode\\todolistarea\\todolistarea\\controllers\\taskcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|solutionrelative:todolistarea\\controllers\\taskcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -27,6 +35,32 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "TaskDependency.cs",
+              "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\DbContextHelp\\Models\\TaskDependency.cs",
+              "RelativeDocumentMoniker": "DbContextHelp\\Models\\TaskDependency.cs",
+              "ToolTip": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\DbContextHelp\\Models\\TaskDependency.cs",
+              "RelativeToolTip": "DbContextHelp\\Models\\TaskDependency.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-30T03:39:50.021Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SystemLog.cs",
+              "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\DbContextHelp\\Models\\SystemLog.cs",
+              "RelativeDocumentMoniker": "DbContextHelp\\Models\\SystemLog.cs",
+              "ToolTip": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\DbContextHelp\\Models\\SystemLog.cs",
+              "RelativeToolTip": "DbContextHelp\\Models\\SystemLog.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-30T03:39:44.867Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "TaskController.cs",
               "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Controllers\\TaskController.cs",
               "RelativeDocumentMoniker": "ToDoListArea\\Controllers\\TaskController.cs",
@@ -39,7 +73,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "ToDoListAreaDbContext.cs",
               "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\DbContextHelp\\Models\\ToDoListAreaDbContext.cs",
               "RelativeDocumentMoniker": "DbContextHelp\\Models\\ToDoListAreaDbContext.cs",
@@ -47,12 +81,11 @@
               "RelativeToolTip": "DbContextHelp\\Models\\ToDoListAreaDbContext.cs",
               "ViewState": "AgIAAC8AAAAAAAAAAAAawEAAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-29T14:09:42.228Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-29T14:09:42.228Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "Class1.cs",
               "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\DbContextHelp\\Class1.cs",
               "RelativeDocumentMoniker": "DbContextHelp\\Class1.cs",
@@ -60,8 +93,7 @@
               "RelativeToolTip": "DbContextHelp\\Class1.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-29T13:56:33.501Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-29T13:56:33.501Z"
             }
           ]
         }
