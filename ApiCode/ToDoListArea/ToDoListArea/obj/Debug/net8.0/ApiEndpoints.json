@@ -11,6 +11,16 @@
   },
   {
     "ContainingType": "ToDoListArea.Controllers.DataConsistencyController",
+    "Method": "DebugCheckDataConsistency",
+    "RelativePath": "api/DataConsistency/debug/check",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.DataConsistencyController",
     "Method": "FixDataConsistency",
     "RelativePath": "api/DataConsistency/fix",
     "HttpMethod": "POST",
@@ -60,6 +70,460 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.GanttDataController",
+    "Method": "UpdateGanttData",
+    "RelativePath": "api/GanttData/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateDto",
+        "Type": "ToDoListArea.Models.GanttDataUpdateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[ToDoListArea.Models.GanttDataDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.GanttDataController",
+    "Method": "DeleteGanttData",
+    "RelativePath": "api/GanttData/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.GanttDataController",
+    "Method": "CheckConsistency",
+    "RelativePath": "api/GanttData/consistency-check/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[ToDoListArea.Models.GanttConsistencyCheckDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.GanttDataController",
+    "Method": "SyncFromTasks",
+    "RelativePath": "api/GanttData/sync/{userId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[ToDoListArea.Models.GanttSyncResultDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.GanttDataController",
+    "Method": "GetGanttData",
+    "RelativePath": "api/GanttData/user/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[System.Collections.Generic.List\u00601[[ToDoListArea.Models.GanttDataDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.MetricsController",
+    "Method": "TriggerGarbageCollection",
+    "RelativePath": "api/Metrics/gc",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.MetricsController",
+    "Method": "GetRecentLogs",
+    "RelativePath": "api/Metrics/logs",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "level",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.MetricsController",
+    "Method": "GetPerformanceCounters",
+    "RelativePath": "api/Metrics/performance-counters",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.MetricsController",
+    "Method": "ResetMetrics",
+    "RelativePath": "api/Metrics/reset",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.MetricsController",
+    "Method": "GetMetricsSummary",
+    "RelativePath": "api/Metrics/summary",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Services.MetricsSummary",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.MetricsController",
+    "Method": "GetSystemStatus",
+    "RelativePath": "api/Metrics/system-status",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.ReminderController",
+    "Method": "GetReminders",
+    "RelativePath": "api/Reminder",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaskId",
+        "Type": "System.Nullable\u00601[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "StartTime",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "EndTime",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchKeyword",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SortBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.ReminderController",
+    "Method": "CreateReminder",
+    "RelativePath": "api/Reminder",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createDto",
+        "Type": "ToDoListArea.DTOs.CreateReminderDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.DTOs.ReminderDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.ReminderController",
+    "Method": "GetReminder",
+    "RelativePath": "api/Reminder/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.DTOs.ReminderDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.ReminderController",
+    "Method": "UpdateReminder",
+    "RelativePath": "api/Reminder/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateDto",
+        "Type": "ToDoListArea.DTOs.UpdateReminderDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.DTOs.ReminderDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.ReminderController",
+    "Method": "DeleteReminder",
+    "RelativePath": "api/Reminder/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.ReminderController",
+    "Method": "CompleteReminder",
+    "RelativePath": "api/Reminder/{id}/complete",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.ReminderController",
+    "Method": "SnoozeReminder",
+    "RelativePath": "api/Reminder/{id}/snooze",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "snoozeDto",
+        "Type": "ToDoListArea.DTOs.SnoozeReminderDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.ReminderController",
+    "Method": "GetReminderStats",
+    "RelativePath": "api/Reminder/stats",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.DTOs.ReminderStatsDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.ReminderController",
+    "Method": "GetTaskReminders",
+    "RelativePath": "api/Reminder/task/{taskId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "taskId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[ToDoListArea.DTOs.ReminderDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "ToDoListArea.Controllers.TaskController",
@@ -381,6 +845,675 @@
     ]
   },
   {
+    "ContainingType": "ToDoListArea.Controllers.TaskDependencyController",
+    "Method": "DeleteTaskDependency",
+    "RelativePath": "api/TaskDependency/{dependencyId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dependencyId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskDependencyController",
+    "Method": "CheckTaskConflicts",
+    "RelativePath": "api/TaskDependency/task/{taskId}/conflicts",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "taskId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.DTOs.TaskConflictCheckDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskDependencyController",
+    "Method": "GetTaskDependencies",
+    "RelativePath": "api/TaskDependency/task/{taskId}/dependencies",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "taskId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[ToDoListArea.DTOs.TaskDependencyDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskDependencyController",
+    "Method": "CreateTaskDependency",
+    "RelativePath": "api/TaskDependency/task/{taskId}/dependency",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "taskId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "ToDoListArea.DTOs.CreateTaskDependencyDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.DTOs.TaskDependencyDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskDependencyController",
+    "Method": "GetTaskDependents",
+    "RelativePath": "api/TaskDependency/task/{taskId}/dependents",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "taskId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[ToDoListArea.DTOs.TaskDependencyDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskDetailsController",
+    "Method": "DeleteTaskDetail",
+    "RelativePath": "api/TaskDetails/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskDetailsController",
+    "Method": "UpdateChecklistItem",
+    "RelativePath": "api/TaskDetails/checklist/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateDto",
+        "Type": "ToDoListArea.Models.UpdateChecklistItemDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[ToDoListArea.Models.ChecklistItemDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskDetailsController",
+    "Method": "GetTaskDetails",
+    "RelativePath": "api/TaskDetails/task/{taskId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "taskId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "detailType",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[System.Collections.Generic.List\u00601[[ToDoListArea.Models.TaskDetailDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskDetailsController",
+    "Method": "GetTaskChecklist",
+    "RelativePath": "api/TaskDetails/task/{taskId}/checklist",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "taskId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[System.Collections.Generic.List\u00601[[ToDoListArea.Models.ChecklistItemDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskDetailsController",
+    "Method": "AddChecklistItem",
+    "RelativePath": "api/TaskDetails/task/{taskId}/checklist",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "taskId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "createDto",
+        "Type": "ToDoListArea.Models.CreateChecklistItemDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[ToDoListArea.Models.ChecklistItemDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskDetailsController",
+    "Method": "BatchUpdateChecklistStatus",
+    "RelativePath": "api/TaskDetails/task/{taskId}/checklist/batch-status",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "taskId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "isCompleted",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[ToDoListArea.Models.BatchOperationResultDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskDetailsController",
+    "Method": "GetTaskLinks",
+    "RelativePath": "api/TaskDetails/task/{taskId}/links",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "taskId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[System.Collections.Generic.List\u00601[[ToDoListArea.Models.TaskLinkDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskDetailsController",
+    "Method": "AddTaskLink",
+    "RelativePath": "api/TaskDetails/task/{taskId}/links",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "taskId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "createDto",
+        "Type": "ToDoListArea.Models.CreateTaskLinkDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[ToDoListArea.Models.TaskLinkDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskDetailsController",
+    "Method": "GetTaskNotes",
+    "RelativePath": "api/TaskDetails/task/{taskId}/notes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "taskId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[System.Collections.Generic.List\u00601[[ToDoListArea.Models.TaskNoteDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskDetailsController",
+    "Method": "AddTaskNote",
+    "RelativePath": "api/TaskDetails/task/{taskId}/notes",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "taskId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "createDto",
+        "Type": "ToDoListArea.Models.CreateTaskNoteDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[ToDoListArea.Models.TaskNoteDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskDetailsController",
+    "Method": "GetTaskDetailsStats",
+    "RelativePath": "api/TaskDetails/task/{taskId}/stats",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "taskId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[ToDoListArea.Models.TaskDetailsStatsDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskTemplateController",
+    "Method": "CreateTemplate",
+    "RelativePath": "api/TaskTemplate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createDto",
+        "Type": "ToDoListArea.Models.TaskTemplateCreateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[ToDoListArea.Models.TaskTemplateDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskTemplateController",
+    "Method": "GetTemplate",
+    "RelativePath": "api/TaskTemplate/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[ToDoListArea.Models.TaskTemplateDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskTemplateController",
+    "Method": "UpdateTemplate",
+    "RelativePath": "api/TaskTemplate/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateDto",
+        "Type": "ToDoListArea.Models.TaskTemplateUpdateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[ToDoListArea.Models.TaskTemplateDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskTemplateController",
+    "Method": "DeleteTemplate",
+    "RelativePath": "api/TaskTemplate/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskTemplateController",
+    "Method": "CreateTaskFromTemplate",
+    "RelativePath": "api/TaskTemplate/{templateId}/use",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "templateId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "createTaskDto",
+        "Type": "ToDoListArea.Models.CreateTaskFromTemplateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[ToDoListArea.Models.TaskResponseDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskTemplateController",
+    "Method": "GetTemplateCategories",
+    "RelativePath": "api/TaskTemplate/categories/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[System.Collections.Generic.List\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskTemplateController",
+    "Method": "GetTemplateStats",
+    "RelativePath": "api/TaskTemplate/stats/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[ToDoListArea.Models.TemplateUsageStatsDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.TaskTemplateController",
+    "Method": "GetUserTemplates",
+    "RelativePath": "api/TaskTemplate/user/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "category",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortBy",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[System.Collections.Generic.List\u00601[[ToDoListArea.Models.TaskTemplateDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "ToDoListArea.Controllers.UserController",
     "Method": "Login",
     "RelativePath": "api/User/login",
@@ -490,16 +1623,22 @@
     ]
   },
   {
-    "ContainingType": "ToDoListArea.Controllers.WeatherForecastController",
-    "Method": "Get",
-    "RelativePath": "WeatherForecast",
-    "HttpMethod": "GET",
+    "ContainingType": "ToDoListArea.Controllers.UserActivityController",
+    "Method": "CreateUserActivity",
+    "RelativePath": "api/UserActivity",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "createDto",
+        "Type": "ToDoListArea.Models.CreateUserActivityDto",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[ToDoListArea.WeatherForecast, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[ToDoListArea.Models.UserActivityDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -507,7 +1646,226 @@
         ],
         "StatusCode": 200
       }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.UserActivityController",
+    "Method": "DeleteUserActivity",
+    "RelativePath": "api/UserActivity/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
     ],
-    "EndpointName": "GetWeatherForecast"
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.UserActivityController",
+    "Method": "GetActivityTypes",
+    "RelativePath": "api/UserActivity/activity-types",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[System.Collections.Generic.List\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.UserActivityController",
+    "Method": "GetUserActivities",
+    "RelativePath": "api/UserActivity/user/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "activityType",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[System.Collections.Generic.List\u00601[[ToDoListArea.Models.UserActivityDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.UserActivityController",
+    "Method": "GetUserActivityStats",
+    "RelativePath": "api/UserActivity/user/{userId}/stats",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "startDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "endDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[ToDoListArea.Models.UserActivityStatsDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.UserProfileController",
+    "Method": "GetProfile",
+    "RelativePath": "api/UserProfile/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[ToDoListArea.Models.UserProfileDetailDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.UserProfileController",
+    "Method": "UpdateProfile",
+    "RelativePath": "api/UserProfile/{userId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateDto",
+        "Type": "ToDoListArea.Models.UserProfileUpdateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ToDoListArea.Models.ApiResponse\u00601[[ToDoListArea.Models.UserProfileDetailDto, ToDoListArea, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.HealthController",
+    "Method": "Get",
+    "RelativePath": "Health",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.HealthController",
+    "Method": "GetDetailed",
+    "RelativePath": "Health/detailed",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.HealthController",
+    "Method": "Live",
+    "RelativePath": "Health/live",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ToDoListArea.Controllers.HealthController",
+    "Method": "Ready",
+    "RelativePath": "Health/ready",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
   }
 ]

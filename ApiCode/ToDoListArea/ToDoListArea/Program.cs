@@ -2,7 +2,9 @@ using DbContextHelp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Text;
+using System.Text.Json;
 using ToDoListArea.Services;
 using ToDoListArea.Middleware;
 
@@ -65,7 +67,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
                 logger.LogWarning("JWT authentication failed for {Path}: {Error}",
                     context.Request.Path, context.Exception.Message);
-                return Task.CompletedTask;
+                return System.Threading.Tasks.Task.CompletedTask;
             },
             OnChallenge = context =>
             {
@@ -113,7 +115,7 @@ builder.Services.AddControllers();
 
 // 添加健康检查服务
 builder.Services.AddHealthChecks()
-    .AddDbContext<ToDoListAreaDbContext>(name: "database")
+    .AddDbContextCheck<ToDoListAreaDbContext>("database")
     .AddCheck("self", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy());
 
 // 配置CORS - 生产环境安全策略

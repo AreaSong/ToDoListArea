@@ -391,3 +391,36 @@ ssl/
 
 # IDE temporary files
 .vscode/settings.json.bak
+
+# ===========================================
+# 新项目结构相关忽略规则
+# ===========================================
+
+# 环境配置文件 - 敏感信息
+environments/*/.env*
+environments/*/.env.*.local
+environments/*/secrets/
+!environments/*/.env*.template
+!environments/*/.env*.example
+
+# 部署临时文件
+deployment/logs/
+deployment/temp/
+deployment/*.log
+deployment/backup_*
+
+# 数据库相关
+database/backups/
+database/dumps/
+database/*.bak
+database/temp/
+
+# 生产环境敏感文件
+.env.production
+.env.staging
+*.production.json
+*.staging.json
+
+# Docker相关新增
+docker-compose.override.yml
+.docker/

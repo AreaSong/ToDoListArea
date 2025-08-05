@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { App as AntdApp } from 'antd';
 
 import ErrorBoundary from './components/ErrorBoundary';
 import { LoadingPage } from './components/LoadingSpinner';
@@ -36,9 +37,10 @@ const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <ThemeProvider>
-        <Router>
-          <div className="App">
-            <Suspense fallback={<PageLoading />}>
+        <AntdApp>
+          <Router>
+            <div className="App">
+              <Suspense fallback={<PageLoading />}>
               <Routes>
               {/* 公开路由 */}
               <Route path="/login" element={<LoginPage />} />
@@ -100,6 +102,7 @@ const App: React.FC = () => {
           </Suspense>
         </div>
       </Router>
+        </AntdApp>
       </ThemeProvider>
     </ErrorBoundary>
   );

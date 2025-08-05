@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ToDoListArea.Data;
+using DbContextHelp.Models;
+using System.Diagnostics;
 
 namespace ToDoListArea.Controllers
 {
@@ -12,10 +13,10 @@ namespace ToDoListArea.Controllers
     [Route("[controller]")]
     public class HealthController : ControllerBase
     {
-        private readonly ToDoListDbContext _context;
+        private readonly ToDoListAreaDbContext _context;
         private readonly ILogger<HealthController> _logger;
 
-        public HealthController(ToDoListDbContext context, ILogger<HealthController> logger)
+        public HealthController(ToDoListAreaDbContext context, ILogger<HealthController> logger)
         {
             _context = context;
             _logger = logger;

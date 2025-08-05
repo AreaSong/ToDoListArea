@@ -32,10 +32,28 @@
 
 ### 基础信息
 - **API版本**: v1.0
-- **基础URL**: `https://api.todoapp.com/api/v1`
-- **协议**: HTTPS
+- **基础URL**: `http://localhost:5006/api` (开发环境)
+- **协议**: HTTP/HTTPS
 - **数据格式**: JSON
 - **字符编码**: UTF-8
+
+### 🎯 已实现控制器清单（13个）
+| 控制器 | 路由前缀 | 功能描述 | 端点数量 |
+|--------|---------|----------|----------|
+| **HealthController** | `/Health` | 健康检查和系统状态监控 | 5个 |
+| **MetricsController** | `/Metrics` | 系统指标和性能监控 | 6个 |
+| **UserController** | `/User` | 用户管理和认证系统 | 8个 |
+| **UserProfileController** | `/UserProfile` | 用户配置和个人信息管理 | 7个 |
+| **TaskController** | `/Task` | 任务核心CRUD和管理功能 | 12个 |
+| **TaskDetailsController** | `/TaskDetails` | 任务详细信息和扩展功能 | 10个 |
+| **TaskCategoryController** | `/TaskCategory` | 任务分类管理系统 | 8个 |
+| **TaskDependencyController** | `/TaskDependency` | 任务依赖关系处理 | 9个 |
+| **TaskTemplateController** | `/TaskTemplate` | 任务模板和复用系统 | 11个 |
+| **ReminderController** | `/Reminder` | 多维度提醒功能管理 | 13个 |
+| **GanttDataController** | `/GanttData` | 甘特图数据处理和同步 | 8个 |
+| **UserActivityController** | `/UserActivity` | 用户活动跟踪和日志 | 7个 |
+| **DataConsistencyController** | `/DataConsistency` | 数据一致性检查和修复 | 6个 |
+| **总计** | - | **完整的企业级API架构** | **110+个端点** |
 
 ### 认证方式
 - **JWT Token**: 在请求头中携带 `Authorization: Bearer <token>`

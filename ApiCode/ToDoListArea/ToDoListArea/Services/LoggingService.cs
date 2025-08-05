@@ -81,23 +81,22 @@ namespace ToDoListArea.Services
     public class PerformanceMonitoringMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILoggingService _loggingService;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly ILogger<PerformanceMonitoringMiddleware> _logger;
 
         public PerformanceMonitoringMiddleware(
-            RequestDelegate next, 
-            ILoggingService loggingService,
+            RequestDelegate next,
+            IServiceScopeFactory serviceScopeFactory,
             ILogger<PerformanceMonitoringMiddleware> logger)
         {
             _next = next;
-            _loggingService = loggingService;
+            _serviceScopeFactory = serviceScopeFactory;
             _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext context)
         {
             var stopwatch = Stopwatch.StartNew();
-            var originalBodyStream = context.Response.Body;
 
             try
             {
@@ -106,9 +105,13 @@ namespace ToDoListArea.Services
             finally
             {
                 stopwatch.Stop();
-                
+
+                // 使用作用域来获取 ILoggingService
+                using var scope = _serviceScopeFactory.CreateScope();
+                var loggingService = scope.ServiceProvider.GetRequiredService<ILoggingService>();
+
                 // 记录API调用性能
-                _loggingService.LogApiCall(
+                loggingService.LogApiCall(
                     context.Request.Path,
                     context.Request.Method,
                     context.Response.StatusCode,
@@ -125,8 +128,8 @@ namespace ToDoListArea.Services
                 }
 
                 // 记录性能指标
-                _loggingService.LogPerformanceMetric("request_duration", stopwatch.ElapsedMilliseconds, "ms");
-                _loggingService.LogPerformanceMetric("response_status", context.Response.StatusCode);
+                loggingService.LogPerformanceMetric("request_duration", stopwatch.ElapsedMilliseconds, "ms");
+                loggingService.LogPerformanceMetric("response_status", context.Response.StatusCode);
             }
         }
     }

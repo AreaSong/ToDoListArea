@@ -36,6 +36,11 @@ import { taskApi, categoryApi } from '../services/api';
 import type { Task, TaskCreateDto, TaskCategory, User, TaskStatus, TaskPriority } from '../types/api';
 import { TaskPriorityLabels } from '../types/api';
 import dayjs from 'dayjs';
+import { LoadingSpinner } from '../components/LoadingSpinner';
+import ConfirmDialog from '../components/ConfirmDialog';
+import SuccessFeedback, { SuccessTypes } from '../components/SuccessFeedback';
+import EnhancedEmpty, { EmptyPresets } from '../components/EnhancedEmpty';
+import { feedback } from '../utils/feedbackManager';
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
@@ -52,6 +57,10 @@ const DashboardPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [priorityFilter, setPriorityFilter] = useState<string>('');
   const [categoryFilter, setCategoryFilter] = useState<string>('');
+  const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+  const [successFeedbackVisible, setSuccessFeedbackVisible] = useState(false);
+  const [successFeedbackConfig, setSuccessFeedbackConfig] = useState<any>({});
+  const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
   const navigate = useNavigate();
 
   // 获取当前用户信息
@@ -113,7 +122,7 @@ const DashboardPage: React.FC = () => {
         setTasks(response.data.items);
       }
     } catch (error) {
-      message.error('获取任务列表失败');
+      feedback.loadError('任务列表');
     } finally {
       setLoading(false);
     }
@@ -127,7 +136,7 @@ const DashboardPage: React.FC = () => {
         setCategories(response.data);
       }
     } catch (error) {
-      message.error('获取分类列表失败');
+      feedback.loadError('分类列表');
     }
   };
 
@@ -149,14 +158,19 @@ const DashboardPage: React.FC = () => {
         // 更新任务
         const response = await taskApi.updateTask(editingTask.id, taskData);
         if (response.success) {
-          message.success('任务更新成功');
+          feedback.taskUpdated();
           fetchTasks();
         }
       } else {
         // 创建任务
         const response = await taskApi.createTask(currentUser.id, taskData);
         if (response.success) {
-          message.success('任务创建成功');
+          // 显示成功反馈
+          setSuccessFeedbackConfig({
+            ...SuccessTypes.taskCreated,
+            onClose: () => setSuccessFeedbackVisible(false)
+          });
+          setSuccessFeedbackVisible(true);
           fetchTasks();
         }
       }
@@ -165,27 +179,32 @@ const DashboardPage: React.FC = () => {
       setEditingTask(null);
       form.resetFields();
     } catch (error) {
-      message.error(editingTask ? '任务更新失败' : '任务创建失败');
+      feedback.operationError(editingTask ? '任务更新' : '任务创建', error);
     }
   };
 
   // 删除任务
-  const handleDelete = async (taskId: string) => {
-    Modal.confirm({
-      title: '确认删除',
-      content: '确定要删除这个任务吗？此操作不可恢复。',
-      onOk: async () => {
-        try {
-          const response = await taskApi.deleteTask(taskId);
-          if (response.success) {
-            message.success('任务删除成功');
-            fetchTasks();
-          }
-        } catch (error) {
-          message.error('任务删除失败');
-        }
+  const handleDelete = async (taskId: string, taskTitle: string) => {
+    setTaskToDelete(taskId);
+    setConfirmDialogVisible(true);
+  };
+
+  // 确认删除任务
+  const confirmDeleteTask = async () => {
+    if (!taskToDelete) return;
+
+    try {
+      const response = await taskApi.deleteTask(taskToDelete);
+      if (response.success) {
+        feedback.taskDeleted();
+        fetchTasks();
       }
-    });
+    } catch (error) {
+      feedback.operationError('任务删除', error);
+    } finally {
+      setConfirmDialogVisible(false);
+      setTaskToDelete(null);
+    }
   };
 
   // 编辑任务
@@ -216,11 +235,20 @@ const DashboardPage: React.FC = () => {
     try {
       const response = await taskApi.updateTask(taskId, { status: newStatus });
       if (response.success) {
-        message.success('状态更新成功');
+        if (newStatus === 'Completed') {
+          // 任务完成时显示庆祝反馈
+          setSuccessFeedbackConfig({
+            ...SuccessTypes.taskCompleted,
+            onClose: () => setSuccessFeedbackVisible(false)
+          });
+          setSuccessFeedbackVisible(true);
+        } else {
+          feedback.operationSuccess('状态更新');
+        }
         fetchTasks();
       }
     } catch (error) {
-      message.error('状态更新失败');
+      feedback.operationError('状态更新', error);
     }
   };
 
@@ -320,7 +348,7 @@ const DashboardPage: React.FC = () => {
             type="link"
             danger
             icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record.id)}
+            onClick={() => handleDelete(record.id, record.title)}
           >
             删除
           </Button>
@@ -446,38 +474,27 @@ const DashboardPage: React.FC = () => {
             </Space>
           </div>
 
-          <Table
-            columns={columns}
-            dataSource={tasks}
-            rowKey="id"
-            loading={loading}
-            pagination={{
-              pageSize: 10,
-              showSizeChanger: true,
-              showQuickJumper: true,
-              showTotal: (total) => `共 ${total} 条记录`,
-            }}
-            locale={{
-              emptyText: (
-                <Empty
-                  image={Empty.PRESENTED_IMAGE_SIMPLE}
-                  description={
-                    <span>
-                      暂无任务数据
-                      <br />
-                      <Button
-                        type="link"
-                        onClick={handleCreate}
-                        style={{ padding: 0 }}
-                      >
-                        创建第一个任务
-                      </Button>
-                    </span>
-                  }
-                />
-              )
-            }}
-          />
+          <LoadingSpinner spinning={loading} tip="加载任务列表中...">
+            <Table
+              columns={columns}
+              dataSource={tasks}
+              rowKey="id"
+              pagination={{
+                pageSize: 10,
+                showSizeChanger: true,
+                showQuickJumper: true,
+                showTotal: (total) => `共 ${total} 条记录`,
+              }}
+              locale={{
+                emptyText: (
+                  <EnhancedEmpty
+                    {...EmptyPresets.noTasks(handleCreate)}
+                    showTips={true}
+                  />
+                )
+              }}
+            />
+          </LoadingSpinner>
         </Card>
 
         {/* 任务创建/编辑模态框 */}
@@ -584,6 +601,32 @@ const DashboardPage: React.FC = () => {
             </Form.Item>
           </Form>
         </Modal>
+
+        {/* 确认删除对话框 */}
+        <ConfirmDialog
+          visible={confirmDialogVisible}
+          title="确认删除任务"
+          content="确定要删除这个任务吗？此操作不可恢复。"
+          type="danger"
+          confirmText="删除"
+          cancelText="取消"
+          onConfirm={confirmDeleteTask}
+          onCancel={() => {
+            setConfirmDialogVisible(false);
+            setTaskToDelete(null);
+          }}
+          consequences={[
+            '任务及其所有相关数据将被永久删除',
+            '任务的历史记录将无法恢复',
+            '相关的提醒和依赖关系将被清除'
+          ]}
+        />
+
+        {/* 成功反馈对话框 */}
+        <SuccessFeedback
+          visible={successFeedbackVisible}
+          {...successFeedbackConfig}
+        />
       </Content>
     </Layout>
   );

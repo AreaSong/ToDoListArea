@@ -1,0 +1,71 @@
+# ===========================================
+# Docker Compose - 开发环境配置
+# 用于本地开发环境的轻量级配置
+# ===========================================
+
+version: '3.8'
+
+services:
+  # 数据库服务 - 开发环境配置
+  database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: todolist-database-dev
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=DevPass123!
+      - MSSQL_PID=Express
+      - MSSQL_COLLATION=Chinese_PRC_CI_AS
+    ports:
+      - "1433:1433"
+    volumes:
+      - db_data_dev:/var/opt/mssql
+      - ../../database/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    networks:
+      - todolist-network-dev
+    restart: unless-stopped
+
+  # 后端API服务 - 开发环境
+  backend:
+    build:
+      context: ../../ApiCode/ToDoListArea/ToDoListArea
+      dockerfile: Dockerfile
+    container_name: todolist-backend-dev
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5006
+      - ConnectionStrings__DefaultConnection=Server=database,1433;Database=ToDoListArea;User Id=sa;Password=DevPass123!;TrustServerCertificate=true;
+      - JwtSettings__SecretKey=DevSecretKeyForDevelopment123456789
+      - JwtSettings__Issuer=ToDoListAreaDev
+      - JwtSettings__Audience=ToDoListAreaDevClient
+      - JwtSettings__ExpirationInMinutes=60
+    ports:
+      - "5006:5006"
+    depends_on:
+      - database
+    networks:
+      - todolist-network-dev
+    restart: unless-stopped
+
+  # 前端服务 - 开发环境
+  frontend:
+    build:
+      context: ../../WebCode/todo-frontend
+      dockerfile: Dockerfile
+    container_name: todolist-frontend-dev
+    environment:
+      - NODE_ENV=development
+      - VITE_API_BASE_URL=http://localhost:5006
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - todolist-network-dev
+    restart: unless-stopped
+
+volumes:
+  db_data_dev:
+
+networks:
+  todolist-network-dev:
+    driver: bridge

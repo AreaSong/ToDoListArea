@@ -1,91 +1,184 @@
+# ===========================================
+# Docker Compose - Linux生产环境配置
+# 专为Linux生产环境优化的配置文件
+# ===========================================
+
 version: '3.8'
 
 services:
-  # 数据库服务
+  # 数据库服务 - 生产环境配置
   database:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: todolist-database
+    container_name: todolist-database-prod
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=${DB_SA_PASSWORD:-TodoList@2024!}
+      - SA_PASSWORD=${DB_SA_PASSWORD}
       - MSSQL_PID=Express
+      - MSSQL_COLLATION=Chinese_PRC_CI_AS
+      - MSSQL_MEMORY_LIMIT_MB=1024
     ports:
       - "1433:1433"
     volumes:
-      - db_data:/var/opt/mssql
-      - ./Scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+      - db_data_prod:/var/opt/mssql
+      - ./database/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+      - ./backups:/var/opt/mssql/backup
     networks:
-      - todolist-network
+      - todolist-network-prod
     restart: unless-stopped
+    # 生产环境资源限制
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 1G
+          cpus: '0.5'
+    # Linux系统优化
+    sysctls:
+      - net.core.somaxconn=65535
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+    # 生产环境健康检查
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${DB_SA_PASSWORD:-TodoList@2024!} -Q 'SELECT 1'"]
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${DB_SA_PASSWORD} -Q 'SELECT 1'"]
       interval: 30s
       timeout: 10s
       retries: 5
-      start_period: 30s
+      start_period: 60s
 
-  # 后端API服务
+  # 后端API服务 - 生产环境配置
   backend:
     build:
       context: ./ApiCode/ToDoListArea/ToDoListArea
       dockerfile: Dockerfile
-    container_name: todolist-backend
+    container_name: todolist-backend-prod
     environment:
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Production}
+      - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:5006
-      - ConnectionStrings__DefaultConnection=Server=database,1433;Database=ToDoListArea;User Id=sa;Password=${DB_SA_PASSWORD:-TodoList@2024!};TrustServerCertificate=true;
-      - JwtSettings__SecretKey=${JWT_SECRET_KEY:-your-super-secret-jwt-key-that-is-at-least-32-characters-long}
-      - JwtSettings__Issuer=${JWT_ISSUER:-ToDoListArea}
-      - JwtSettings__Audience=${JWT_AUDIENCE:-ToDoListArea-Users}
-      - JwtSettings__ExpirationInMinutes=${JWT_EXPIRATION:-60}
+      - ConnectionStrings__DefaultConnection=Server=database,1433;Database=ToDoListArea;User Id=sa;Password=${DB_SA_PASSWORD};TrustServerCertificate=true;
+      - JwtSettings__SecretKey=${JWT_SECRET_KEY}
+      - JwtSettings__Issuer=${JWT_ISSUER}
+      - JwtSettings__Audience=${JWT_AUDIENCE}
+      - JwtSettings__ExpirationInMinutes=${JWT_EXPIRATION}
+      # 生产环境特定配置
+      - TZ=Asia/Shanghai
+      - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
     ports:
       - "5006:5006"
+    volumes:
+      # 生产环境日志
+      - ./logs:/app/logs
+      # 配置文件挂载
+      - ./ApiCode/ToDoListArea/ToDoListArea/appsettings.Production.json:/app/appsettings.Production.json:ro
     depends_on:
       database:
         condition: service_healthy
     networks:
-      - todolist-network
+      - todolist-network-prod
     restart: unless-stopped
+    # 生产环境资源限制
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+        reservations:
+          memory: 512M
+          cpus: '0.25'
+    # Linux系统优化
+    sysctls:
+      - net.core.somaxconn=65535
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+    # 生产环境健康检查
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:5006/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 60s
 
-  # 前端服务
+  # 前端服务 - 生产环境配置
   frontend:
     build:
       context: ./WebCode/todo-frontend
       dockerfile: Dockerfile
-    container_name: todolist-frontend
+      target: production
+    container_name: todolist-frontend-prod
+    environment:
+      - NGINX_HOST=${DOMAIN_NAME}
+      - TZ=Asia/Shanghai
     ports:
       - "80:80"
       - "443:443"
+    volumes:
+      # SSL证书挂载
+      - ./ssl/nginx-selfsigned.crt:/etc/ssl/certs/nginx-selfsigned.crt:ro
+      - ./ssl/nginx-selfsigned.key:/etc/ssl/private/nginx-selfsigned.key:ro
+      # Nginx日志
+      - ./logs/nginx:/var/log/nginx
+      # Nginx配置
+      - ./WebCode/todo-frontend/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       backend:
         condition: service_healthy
     networks:
-      - todolist-network
+      - todolist-network-prod
     restart: unless-stopped
+    # 生产环境资源限制
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.25'
+        reservations:
+          memory: 256M
+          cpus: '0.1'
+    # Linux系统优化
+    sysctls:
+      - net.core.somaxconn=65535
+      - net.ipv4.tcp_max_syn_backlog=65535
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+    # 生产环境健康检查
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost/health || exit 1"]
+      test: ["CMD-SHELL", "/usr/local/bin/healthcheck.sh"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 30s
+      start_period: 60s
 
-  # Redis缓存服务（可选）
+  # Redis缓存服务 - 生产环境配置
   redis:
     image: redis:7-alpine
-    container_name: todolist-redis
+    container_name: todolist-redis-prod
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
     ports:
       - "6379:6379"
     volumes:
-      - redis_data:/data
+      - redis_data_prod:/data
+      - ./logs/redis:/var/log/redis
     networks:
-      - todolist-network
+      - todolist-network-prod
     restart: unless-stopped
+    # 生产环境资源限制
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.25'
+        reservations:
+          memory: 256M
+          cpus: '0.1'
+    # 生产环境健康检查
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
@@ -93,11 +186,14 @@ services:
       retries: 3
 
 volumes:
-  db_data:
+  db_data_prod:
     driver: local
-  redis_data:
+  redis_data_prod:
     driver: local
 
 networks:
-  todolist-network:
+  todolist-network-prod:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

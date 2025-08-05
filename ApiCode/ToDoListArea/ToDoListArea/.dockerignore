@@ -1,0 +1,74 @@
+# ===========================================
+# 后端Docker构建忽略文件
+# 优化.NET应用构建性能
+# ===========================================
+
+# 构建输出
+bin/
+obj/
+out/
+publish/
+
+# 用户特定文件
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# 测试结果
+TestResults/
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+
+# NuGet包
+*.nupkg
+*.snupkg
+packages/
+!packages/build/
+
+# 日志文件
+*.log
+
+# 数据库文件
+*.mdf
+*.ldf
+*.ndf
+
+# 临时文件
+*.tmp
+*.temp
+*~
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+
+# 开发工具
+.vscode/
+.idea/
+
+# Git相关
+.git/
+.gitignore
+
+# Docker相关
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# 环境配置
+appsettings.Development.json
+appsettings.Local.json
+
+# 文档文件
+README.md
+CHANGELOG.md
+LICENSE

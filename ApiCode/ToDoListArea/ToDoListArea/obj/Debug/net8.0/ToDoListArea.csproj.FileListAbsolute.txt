@@ -6,8 +6,8 @@ D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\obj\Debug\net8
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\obj\Debug\net8.0\ToDoListArea.MvcApplicationPartsAssemblyInfo.cs
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\obj\Debug\net8.0\ToDoListArea.MvcApplicationPartsAssemblyInfo.cache
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\obj\Debug\net8.0\ToDoListArea.sourcelink.json
-D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\bin\Debug\net8.0\appsettings.Development.json
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\bin\Debug\net8.0\appsettings.json
+D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\bin\Debug\net8.0\appsettings.Production.json
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\bin\Debug\net8.0\ToDoListArea.staticwebassets.endpoints.json
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\bin\Debug\net8.0\ToDoListArea.exe
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\bin\Debug\net8.0\ToDoListArea.deps.json
@@ -38,6 +38,7 @@ D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\bin\Debug\net8
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\bin\Debug\net8.0\Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore.dll
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
@@ -162,6 +163,7 @@ D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\obj\Debug\net8
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\obj\Debug\net8.0\staticwebassets.build.json.cache
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\obj\Debug\net8.0\staticwebassets.development.json
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\obj\Debug\net8.0\ToDoList.267A97F4.Up2Date
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\obj\Debug\net8.0\ToDoListArea.dll
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\obj\Debug\net8.0\refint\ToDoListArea.dll

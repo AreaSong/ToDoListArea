@@ -1,0 +1,44 @@
+# ===========================================
+# ToDoListArea Systemd Service 配置文件
+# 用于Linux系统服务管理
+# ===========================================
+
+[Unit]
+Description=ToDoListArea Web Application
+Documentation=https://github.com/your-repo/ToDoListArea
+After=docker.service
+Requires=docker.service
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/opt/todolist
+ExecStartPre=/usr/bin/docker-compose -f docker-compose.prod.yml down
+ExecStart=/usr/bin/docker-compose -f docker-compose.prod.yml up -d
+ExecStop=/usr/bin/docker-compose -f docker-compose.prod.yml down
+ExecReload=/usr/bin/docker-compose -f docker-compose.prod.yml restart
+TimeoutStartSec=300
+TimeoutStopSec=120
+
+# 重启策略
+Restart=on-failure
+RestartSec=30
+
+# 安全配置
+User=todolist
+Group=todolist
+NoNewPrivileges=true
+
+# 环境变量
+Environment=COMPOSE_PROJECT_NAME=todolist
+EnvironmentFile=-/opt/todolist/.env.production
+
+# 日志配置
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=todolist
+
+[Install]
+WantedBy=multi-user.target

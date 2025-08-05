@@ -41,22 +41,14 @@ ToDoListArea是一个现代化的任务管理系统，专为技术人员和开�
 
 **部署技术**:
 - Docker & Docker Compose
-- Nginx (反向代理)
+- Nginx (反向代理 + SSL)
 - Redis (缓存)
+- Linux生产环境优化
 
 ## 📁 项目结构
 
 ```
 ToDoListArea/
-├── 📁 开发环境部署/                    # 开发环境相关文件
-│   ├── docker-compose.dev.yml         # 开发环境Docker编排
-│   ├── deploy-dev.bat                  # Windows开发环境部署脚本
-│   ├── deploy-dev.sh                   # Linux/macOS开发环境部署脚本
-│   ├── .env.frontend.development       # 前端开发环境配置
-│   ├── appsettings.Development.json    # 后端开发环境配置
-│   ├── 开发环境搭建指南.md              # 开发环境搭建文档
-│   ├── 开发环境故障排除.md              # 故障排除指南
-│   └── 本地开发部署说明.md              # 本地部署说明
 ├── 📁 ApiCode/                        # 后端代码
 │   └── ToDoListArea/
 │       ├── DbContextHelp/              # 数据库上下文帮助项目
@@ -71,14 +63,21 @@ ToDoListArea/
 │       ├── src/                        # 源代码
 │       ├── public/                     # 静态资源
 │       ├── Dockerfile                  # 前端Docker文件
-│       └── nginx.conf                  # Nginx配置
-├── 📁 Tests/                          # 测试文件 🆕
+│       ├── nginx.conf                  # Nginx生产环境配置
+│       ├── .env.example                # 前端环境变量示例
+│       ├── .env.development            # 前端开发环境配置
+│       └── .env.production             # 前端生产环境配置
+├── 📁 Tests/                          # 测试文件
 │   └── API/                            # API测试
 │       └── test_user_profile_api.http  # 用户资料API测试
-├── 📁 Scripts/                        # 生产环境部署脚本
-│   ├── deploy.bat                      # Windows生产部署脚本
-│   ├── deploy.sh                       # Linux生产部署脚本
-│   └── init-db.sql                     # 数据库初始化脚本
+├── 📁 Scripts/                        # Linux生产环境部署脚本
+│   ├── deploy.sh                       # 通用生产部署脚本
+│   ├── deploy-prod.sh                  # Linux专用部署脚本 (推荐)
+│   ├── monitor.sh                      # 系统监控脚本
+│   ├── backup.sh                       # 数据备份脚本
+│   ├── todolist.service                # Linux系统服务配置
+│   ├── init-db.sql                     # 数据库初始化脚本
+│   └── README.md                       # 部署脚本说明
 ├── 📁 实施方案/                        # 项目文档
 │   ├── 项目实施/                       # 实施文档
 │   └── 项目理论架构/                   # 架构文档
@@ -86,64 +85,70 @@ ToDoListArea/
 │   ├── 01_CreateDatabase_Fixed_v3.sql  # 数据库创建脚本
 │   ├── 02_UpdateProgress.md            # 数据库更新记录
 │   └── Check_Tables.sql                # 表结构检查脚本
-├── docker-compose.yml                  # 生产环境Docker编排
+├── docker-compose.yml                  # Linux生产环境Docker编排
+├── .env.example                        # 环境变量示例
 ├── .env.production                     # 生产环境配置
-├── 项目结构说明.md                     # 详细项目结构文档 🆕
+├── 项目结构说明.md                     # 详细项目结构文档
 └── README.md                          # 项目说明文档
 ```
 
 ## 🚀 快速开始
 
-### 开发环境部署（推荐）
+### Linux生产环境部署（推荐）
 
-1. **克隆项目**
+1. **克隆项目到Linux服务器**
    ```bash
    git clone https://github.com/yourusername/ToDoListArea.git
    cd ToDoListArea
    ```
 
-2. **启动开发环境**
+2. **配置环境变量**
    ```bash
-   cd 开发环境部署
-
-   # Windows
-   deploy-dev.bat
-
-   # Linux/macOS
-   chmod +x deploy-dev.sh
-   ./deploy-dev.sh
+   cp .env.example .env.production
+   # 编辑 .env.production 文件，配置生产环境参数
+   nano .env.production
    ```
 
-3. **访问应用**
-   - 🌐 前端应用: http://localhost:5175
-   - 🔧 后端API: http://localhost:5006
-   - 📊 API文档: http://localhost:5006/swagger
-   - 🗄️ 数据库管理: http://localhost:8080
-
-### 生产环境部署
-
-1. **配置环境变量**
+3. **一键部署到Linux生产环境**
    ```bash
-   cp .env.production .env
-   # 编辑.env文件，修改敏感信息
+   # 使用Linux专用部署脚本 (需要root权限)
+   sudo ./Scripts/deploy-prod.sh
    ```
 
-2. **运行部署脚本**
-   ```bash
-   # Windows
-   Scripts\deploy.bat
+4. **访问应用**
+   - 🌐 前端应用: https://your-server-ip
+   - 🔧 后端API: https://your-server-ip/api
+   - 📊 API文档: https://your-server-ip/api/swagger
 
-   # Linux/macOS
-   chmod +x Scripts/deploy.sh
-   ./Scripts/deploy.sh
+### 开发环境部署
+
+1. **本地开发**
+   ```bash
+   # 配置前端环境
+   cd WebCode/todo-frontend
+   cp .env.example .env.development
+   npm install
+   npm run dev
+
+   # 配置后端环境
+   cd ApiCode/ToDoListArea/ToDoListArea
+   dotnet run
+   ```
+
+2. **Docker开发环境**
+   ```bash
+   # 配置环境变量
+   cp .env.example .env.production
+
+   # 启动开发环境
+   docker-compose up -d
    ```
 
 ## 📖 文档导航
 
-### 🛠️ 开发文档
-- [开发环境搭建指南](./开发环境部署/开发环境搭建指南.md)
-- [本地开发部署说明](./开发环境部署/本地开发部署说明.md)
-- [开发环境故障排除](./开发环境部署/开发环境故障排除.md)
+### 🛠️ 部署文档
+- [Linux生产环境部署指南](./Scripts/README.md)
+- [部署脚本说明](./Scripts/README.md)
 
 ### 📋 项目文档
 - [项目综合分析报告](./实施方案/项目实施/项目综合分析报告.md)
@@ -197,8 +202,8 @@ ToDoListArea/
 
 3. **启动开发环境**
    ```bash
-   cd 开发环境部署
-   ./deploy-dev.sh  # 或 deploy-dev.bat
+   # 使用Docker
+   docker-compose up -d
    ```
 
 4. **开发和测试**
@@ -241,9 +246,8 @@ cd ApiCode/ToDoListArea
 dotnet test
 
 # 集成测试
-cd 开发环境部署
-./deploy-dev.sh
-# 访问 http://localhost:5175 进行手动测试
+docker-compose up -d
+# 访问 http://localhost 进行手动测试
 ```
 
 ### 测试覆盖率
@@ -266,23 +270,38 @@ cd 开发环境部署
 
 ## 🚀 部署选项
 
-### 1. Docker部署（推荐）
+### 1. Linux生产环境部署（推荐）
 ```bash
-# 开发环境
-cd 开发环境部署
-./deploy-dev.sh
-
-# 生产环境
-./Scripts/deploy.sh
+# 一键部署到Linux服务器
+sudo ./Scripts/deploy-prod.sh
 ```
 
-### 2. 云服务部署
-- **Azure**: 支持Azure App Service + Azure SQL Database
+### 2. Docker部署
+```bash
+# 配置环境变量
+cp .env.example .env.production
+
+# 启动生产环境
+docker-compose up -d
+```
+
+### 3. 云服务部署
+- **Azure**: 支持Azure Container Instances + Azure SQL Database
 - **AWS**: 支持ECS + RDS
 - **阿里云**: 支持ECS + RDS
+- **腾讯云**: 支持TKE + CDB
 
-### 3. 本地部署
-详见 [本地开发部署说明](./开发环境部署/本地开发部署说明.md)
+### 4. 系统服务管理
+```bash
+# 查看服务状态
+sudo systemctl status todolist
+
+# 启动/停止/重启服务
+sudo systemctl start/stop/restart todolist
+
+# 查看日志
+sudo journalctl -u todolist -f
+```
 
 ## 🤝 贡献指南
 
