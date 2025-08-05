@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
@@ -14,11 +15,19 @@ namespace ToDoListArea.Controllers
     {
         private readonly ToDoListAreaDbContext _context;
         private readonly IJwtService _jwtService;
+        private readonly IUserService _userService;
+        private readonly IInvitationCodeService _invitationCodeService;
 
-        public UserController(ToDoListAreaDbContext context, IJwtService jwtService)
+        public UserController(
+            ToDoListAreaDbContext context,
+            IJwtService jwtService,
+            IUserService userService,
+            IInvitationCodeService invitationCodeService)
         {
             _context = context;
             _jwtService = jwtService;
+            _userService = userService;
+            _invitationCodeService = invitationCodeService;
         }
         /// <summary>
         /// 用户注册
@@ -30,32 +39,31 @@ namespace ToDoListArea.Controllers
         {
             try
             {
-                // 检查邮箱是否已存在
-                var existingUser = await _context.Users
-                    .FirstOrDefaultAsync(u => u.Email == registerDto.Email);
-
-                if (existingUser != null)
+                // 转换为服务层请求模型
+                var registerRequest = new UserRegisterRequest
                 {
-                    return BadRequest(ApiResponse<UserProfileDto>.ErrorResult("邮箱已被注册"));
-                }
-
-                // 创建新用户
-                var user = new User
-                {
-                    Id = Guid.NewGuid(),
                     Email = registerDto.Email,
+                    Password = registerDto.Password,
                     Name = registerDto.Name,
                     Phone = registerDto.Phone,
-                    PasswordHash = PasswordHelper.HashPassword(registerDto.Password),
-                    Status = "Active",
-                    EmailVerified = false,
-                    PhoneVerified = false,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    InvitationCode = registerDto.InvitationCode
                 };
 
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
+                // 调用服务层注册方法
+                var result = await _userService.RegisterAsync(registerRequest);
+
+                if (!result.IsSuccess)
+                {
+                    return BadRequest(ApiResponse<UserProfileDto>.ErrorResult(result.ErrorMessage!));
+                }
+
+                var user = result.Data!;
+
+                // 使用邀请码（记录IP和User Agent）
+                var ipAddress = GetClientIpAddress();
+                var userAgent = Request.Headers["User-Agent"].ToString();
+
+                await _invitationCodeService.UseAsync(registerDto.InvitationCode, user.Id, ipAddress, userAgent);
 
                 // 返回用户信息
                 var userProfile = new UserProfileDto
@@ -66,6 +74,7 @@ namespace ToDoListArea.Controllers
                     Phone = user.Phone,
                     AvatarUrl = user.AvatarUrl,
                     Status = user.Status,
+                    Role = user.Role,
                     EmailVerified = user.EmailVerified,
                     PhoneVerified = user.PhoneVerified,
                     CreatedAt = user.CreatedAt
@@ -104,8 +113,8 @@ namespace ToDoListArea.Controllers
                     return BadRequest(ApiResponse<LoginResponseDto>.ErrorResult("邮箱或密码错误"));
                 }
 
-                // 检查用户状态
-                if (user.Status != "Active")
+                // 检查用户状态 - 修复大小写不匹配问题
+                if (!user.Status.Equals("active", StringComparison.OrdinalIgnoreCase))
                 {
                     return BadRequest(ApiResponse<LoginResponseDto>.ErrorResult("账户已被禁用"));
                 }
@@ -126,6 +135,7 @@ namespace ToDoListArea.Controllers
                     Phone = user.Phone,
                     AvatarUrl = user.AvatarUrl,
                     Status = user.Status,
+                    Role = user.Role,
                     EmailVerified = user.EmailVerified,
                     PhoneVerified = user.PhoneVerified,
                     LastLoginAt = user.LastLoginAt,
@@ -241,6 +251,31 @@ namespace ToDoListArea.Controllers
             {
                 return StatusCode(500, ApiResponse<UserProfileDto>.ErrorResult($"更新用户信息失败: {ex.Message}"));
             }
+        }
+
+        /// <summary>
+        /// 获取客户端IP地址
+        /// </summary>
+        /// <returns>IP地址</returns>
+        private string GetClientIpAddress()
+        {
+            // 检查是否有代理服务器转发的真实IP
+            var xForwardedFor = Request.Headers["X-Forwarded-For"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(xForwardedFor))
+            {
+                // X-Forwarded-For可能包含多个IP，取第一个
+                return xForwardedFor.Split(',')[0].Trim();
+            }
+
+            // 检查X-Real-IP头
+            var xRealIp = Request.Headers["X-Real-IP"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(xRealIp))
+            {
+                return xRealIp;
+            }
+
+            // 使用连接的远程IP地址
+            return HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
         }
     }
 }

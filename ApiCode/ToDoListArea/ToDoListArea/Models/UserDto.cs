@@ -21,6 +21,13 @@ namespace ToDoListArea.Models
 
         [Phone(ErrorMessage = "手机号格式不正确")]
         public string? Phone { get; set; }
+
+        /// <summary>
+        /// 邀请码（注册时必须提供有效的邀请码）
+        /// </summary>
+        [Required(ErrorMessage = "邀请码不能为空")]
+        [StringLength(32, MinimumLength = 6, ErrorMessage = "邀请码长度必须在6-32个字符之间")]
+        public string InvitationCode { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -61,6 +68,7 @@ namespace ToDoListArea.Models
         public string? Phone { get; set; }
         public string? AvatarUrl { get; set; }
         public string Status { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
         public bool EmailVerified { get; set; }
         public bool PhoneVerified { get; set; }
         public DateTime? LastLoginAt { get; set; }

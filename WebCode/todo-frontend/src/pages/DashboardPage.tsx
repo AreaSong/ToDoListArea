@@ -41,6 +41,8 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import SuccessFeedback, { SuccessTypes } from '../components/SuccessFeedback';
 import EnhancedEmpty, { EmptyPresets } from '../components/EnhancedEmpty';
 import { feedback } from '../utils/feedbackManager';
+import { useAuth } from '../contexts/AuthContext';
+import { AdminOnly } from '../components/auth/PermissionGuard';
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
@@ -62,9 +64,7 @@ const DashboardPage: React.FC = () => {
   const [successFeedbackConfig, setSuccessFeedbackConfig] = useState<any>({});
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
   const navigate = useNavigate();
-
-  // 获取当前用户信息
-  const currentUser: User = JSON.parse(localStorage.getItem('user') || '{}');
+  const { user: currentUser, logout, isAdmin } = useAuth();
 
   // 页面加载时获取数据
   useEffect(() => {
@@ -77,6 +77,16 @@ const DashboardPage: React.FC = () => {
     fetchTasks();
   }, [statusFilter, priorityFilter, categoryFilter]);
 
+  // 退出登录
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
   // 用户菜单
   const userMenuItems: MenuProps['items'] = [
     {
@@ -85,6 +95,12 @@ const DashboardPage: React.FC = () => {
       label: '个人设置',
       onClick: () => navigate('/profile')
     },
+    ...(isAdmin() ? [{
+      key: 'admin',
+      icon: <BarChartOutlined />,
+      label: '管理员控制面板',
+      onClick: () => navigate('/admin')
+    }] : []),
     {
       key: 'logout',
       icon: <LogoutOutlined />,
@@ -93,17 +109,9 @@ const DashboardPage: React.FC = () => {
     }
   ];
 
-  // 退出登录
-  function handleLogout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    message.success('已退出登录');
-    navigate('/login');
-  }
-
   // 获取任务列表
   const fetchTasks = async () => {
-    if (!currentUser.id) return;
+    if (!currentUser?.id) return;
 
     setLoading(true);
     try {
@@ -378,10 +386,19 @@ const DashboardPage: React.FC = () => {
         
         <Space>
           <Button type="text" icon={<BellOutlined />} />
+          <AdminOnly>
+            <Button
+              type="primary"
+              icon={<BarChartOutlined />}
+              onClick={() => navigate('/admin')}
+            >
+              管理员控制面板
+            </Button>
+          </AdminOnly>
           <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
             <Space style={{ cursor: 'pointer' }}>
               <Avatar icon={<UserOutlined />} />
-              <span>{currentUser.name}</span>
+              <span>{currentUser?.name}</span>
             </Space>
           </Dropdown>
         </Space>

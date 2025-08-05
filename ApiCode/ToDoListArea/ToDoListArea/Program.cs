@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using ToDoListArea.Services;
 using ToDoListArea.Middleware;
+using ToDoListArea.Tools;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -87,23 +88,33 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // 配置授权策略
 builder.Services.AddAuthorization(options =>
 {
+    // 管理员权限策略
+    options.AddPolicy("AdminOnly", policy =>
+        policy.RequireRole("admin"));
+
+    // 用户权限策略（管理员和普通用户都可以）
+    options.AddPolicy("UserAccess", policy =>
+        policy.RequireRole("admin", "user"));
+
     // 数据一致性查看权限：普通认证用户即可
     options.AddPolicy("DataConsistencyRead", policy =>
         policy.RequireAuthenticatedUser());
 
     // 数据一致性修复权限：需要管理员角色
     options.AddPolicy("DataConsistencyWrite", policy =>
-        policy.RequireRole("Admin"));
+        policy.RequireRole("admin"));
 
     // 系统管理权限：需要管理员角色和特定声明
     options.AddPolicy("SystemAdmin", policy =>
-        policy.RequireRole("Admin")
+        policy.RequireRole("admin")
               .RequireClaim("Permission", "SystemManagement"));
 });
 
 // 注册服务层
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IInvitationCodeService, InvitationCodeService>();
+builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<DataConsistencyService>();
 
 // 注册监控和日志服务
@@ -196,15 +207,40 @@ if (app.Environment.IsDevelopment())
     using (var scope = app.Services.CreateScope())
     {
         var context = scope.ServiceProvider.GetRequiredService<ToDoListAreaDbContext>();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
         try
         {
-            // 检查数据库连接
-            await context.Database.CanConnectAsync();
-            app.Logger.LogInformation("数据库连接成功");
+            // 使用数据库初始化工具进行全面检查
+            var initSuccess = await DatabaseInitializer.EnsureDatabaseAsync(context, logger);
+
+            if (initSuccess)
+            {
+                app.Logger.LogInformation("数据库初始化检查完成");
+
+                // 输出诊断信息
+                var diagnostics = await DatabaseInitializer.GetDatabaseDiagnosticsAsync(context);
+                app.Logger.LogInformation("数据库诊断信息:\n{Diagnostics}", diagnostics);
+
+                // 输出密码哈希（仅开发环境）
+                app.Logger.LogInformation("=== 密码哈希生成器 ===");
+                app.Logger.LogInformation("Qwer1234 的哈希值: {Hash}", ToDoListArea.Tools.PasswordHashGenerator.GenerateHash("Qwer1234"));
+                app.Logger.LogInformation("Admin123! 的哈希值: {Hash}", ToDoListArea.Tools.PasswordHashGenerator.GenerateHash("Admin123!"));
+            }
+            else
+            {
+                app.Logger.LogError("数据库初始化检查失败");
+                app.Logger.LogError("请检查以下项目:");
+                app.Logger.LogError("1. SQL Server Express 服务是否正在运行");
+                app.Logger.LogError("2. 连接字符串是否正确");
+                app.Logger.LogError("3. 是否需要执行数据库初始化脚本");
+                app.Logger.LogError("建议执行: database/secondStep/03_SecurityUpgrade_Migration.sql");
+            }
         }
         catch (Exception ex)
         {
-            app.Logger.LogError(ex, "数据库连接失败");
+            app.Logger.LogError(ex, "数据库初始化过程中发生异常: {Message}", ex.Message);
+            app.Logger.LogError("详细错误信息: {Details}", ex.ToString());
         }
     }
 }
@@ -242,6 +278,9 @@ else
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// 使用角色权限中间件
+app.UseRoleAuthorization();
 
 // 使用用户活动追踪中间件
 app.UseUserActivityTracking();

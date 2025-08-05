@@ -1,15 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { Form, Input, Button, Card, Typography, message, Divider } from 'antd';
-import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
+import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined, SafetyOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
-import { userApi } from '../services/api';
+import { userApi, invitationCodeApi } from '../services/api';
 import type { UserRegisterDto } from '../types/api';
 
 const { Title, Text } = Typography;
 
 const RegisterPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const [invitationCodeValidating, setInvitationCodeValidating] = useState(false);
+  const [invitationCodeStatus, setInvitationCodeStatus] = useState<'success' | 'error' | ''>('');
+  const [invitationCodeMessage, setInvitationCodeMessage] = useState('');
   const navigate = useNavigate();
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 验证邀请码
+  const validateInvitationCode = useCallback(async (code: string) => {
+    if (!code || code.length < 6) {
+      setInvitationCodeStatus('');
+      setInvitationCodeMessage('');
+      return;
+    }
+
+    setInvitationCodeValidating(true);
+    try {
+      const response = await invitationCodeApi.validate({ code });
+
+      if (response.success && response.data?.isValid) {
+        setInvitationCodeStatus('success');
+        setInvitationCodeMessage('邀请码有效');
+      } else {
+        setInvitationCodeStatus('error');
+        setInvitationCodeMessage(response.data?.message || '邀请码无效');
+      }
+    } catch (error: any) {
+      setInvitationCodeStatus('error');
+      setInvitationCodeMessage('验证邀请码失败，请检查网络连接');
+    } finally {
+      setInvitationCodeValidating(false);
+    }
+  }, []);
+
+  // 防抖验证邀请码
+  const debouncedValidateInvitationCode = useCallback((code: string) => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    debounceTimerRef.current = setTimeout(() => {
+      validateInvitationCode(code);
+    }, 500);
+  }, [validateInvitationCode]);
 
   const onFinish = async (values: UserRegisterDto & { confirmPassword: string }) => {
     setLoading(true);
@@ -94,9 +136,36 @@ const RegisterPage: React.FC = () => {
               { pattern: /^1[3-9]\d{9}$/, message: '请输入有效的手机号码!' }
             ]}
           >
-            <Input 
-              prefix={<PhoneOutlined />} 
-              placeholder="手机号码（可选）" 
+            <Input
+              prefix={<PhoneOutlined />}
+              placeholder="手机号码（可选）"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="invitationCode"
+            rules={[
+              { required: true, message: '请输入邀请码!' },
+              { min: 6, message: '邀请码长度不能少于6位!' },
+              { max: 32, message: '邀请码长度不能超过32位!' }
+            ]}
+            validateStatus={invitationCodeStatus}
+            help={invitationCodeMessage}
+            hasFeedback
+          >
+            <Input
+              prefix={<SafetyOutlined />}
+              placeholder="邀请码"
+              onChange={(e) => {
+                const value = e.target.value.trim();
+                if (value) {
+                  debouncedValidateInvitationCode(value);
+                } else {
+                  setInvitationCodeStatus('');
+                  setInvitationCodeMessage('');
+                }
+              }}
+              suffix={invitationCodeValidating ? <span>验证中...</span> : null}
             />
           </Form.Item>
 

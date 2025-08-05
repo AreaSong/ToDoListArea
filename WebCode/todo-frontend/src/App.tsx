@@ -5,6 +5,8 @@ import { App as AntdApp } from 'antd';
 import ErrorBoundary from './components/ErrorBoundary';
 import { LoadingPage } from './components/LoadingSpinner';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { AuthProvider } from './contexts/AuthContext';
+import { ProtectedRoute as AuthProtectedRoute, PublicRoute, AdminRoute } from './components/auth/ProtectedRoute';
 import './App.css';
 import './styles/theme.css';
 
@@ -17,6 +19,7 @@ const GanttPage = React.lazy(() => import('./pages/GanttPage'));
 const TemplatesPage = React.lazy(() => import('./pages/TemplatesPage'));
 const TaskDetailsPage = React.lazy(() => import('./pages/TaskDetailsPage'));
 const ActivityPage = React.lazy(() => import('./pages/ActivityPage'));
+const AdminPage = React.lazy(() => import('./pages/AdminPage'));
 
 // 加载组件
 const PageLoading: React.FC = () => (
@@ -27,72 +30,91 @@ const PageLoading: React.FC = () => (
   />
 );
 
-// 简单的认证检查
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const token = localStorage.getItem('token');
-  return token ? <>{children}</> : <Navigate to="/login" replace />;
-};
-
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
-      <ThemeProvider>
-        <AntdApp>
+      <AuthProvider>
+        <ThemeProvider>
+          <AntdApp>
           <Router>
             <div className="App">
               <Suspense fallback={<PageLoading />}>
               <Routes>
               {/* 公开路由 */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
+              <Route
+                path="/login"
+                element={
+                  <PublicRoute redirectIfAuthenticated>
+                    <LoginPage />
+                  </PublicRoute>
+                }
+              />
+              <Route
+                path="/register"
+                element={
+                  <PublicRoute redirectIfAuthenticated>
+                    <RegisterPage />
+                  </PublicRoute>
+                }
+              />
 
               {/* 受保护的路由 */}
               <Route
                 path="/dashboard"
                 element={
-                  <ProtectedRoute>
+                  <AuthProtectedRoute>
                     <DashboardPage />
-                  </ProtectedRoute>
+                  </AuthProtectedRoute>
                 }
               />
               <Route
                 path="/profile"
                 element={
-                  <ProtectedRoute>
+                  <AuthProtectedRoute>
                     <ProfilePage />
-                  </ProtectedRoute>
+                  </AuthProtectedRoute>
                 }
               />
               <Route
                 path="/gantt"
                 element={
-                  <ProtectedRoute>
+                  <AuthProtectedRoute>
                     <GanttPage />
-                  </ProtectedRoute>
+                  </AuthProtectedRoute>
                 }
               />
               <Route
                 path="/templates"
                 element={
-                  <ProtectedRoute>
+                  <AuthProtectedRoute>
                     <TemplatesPage />
-                  </ProtectedRoute>
+                  </AuthProtectedRoute>
                 }
               />
               <Route
                 path="/task/:taskId"
                 element={
-                  <ProtectedRoute>
+                  <AuthProtectedRoute>
                     <TaskDetailsPage />
-                  </ProtectedRoute>
+                  </AuthProtectedRoute>
                 }
               />
               <Route
                 path="/activity"
                 element={
-                  <ProtectedRoute>
+                  <AuthProtectedRoute>
                     <ActivityPage />
-                  </ProtectedRoute>
+                  </AuthProtectedRoute>
+                }
+              />
+
+              {/* 管理员专用路由 */}
+              <Route
+                path="/admin"
+                element={
+                  <AdminRoute>
+                    <AdminPage />
+                  </AdminRoute>
                 }
               />
 
@@ -102,8 +124,9 @@ const App: React.FC = () => {
           </Suspense>
         </div>
       </Router>
-        </AntdApp>
-      </ThemeProvider>
+          </AntdApp>
+        </ThemeProvider>
+      </AuthProvider>
     </ErrorBoundary>
   );
 };

@@ -19,6 +19,10 @@ public partial class ToDoListAreaDbContext : DbContext
 
     public virtual DbSet<GanttDatum> GanttData { get; set; }
 
+    public virtual DbSet<InvitationCode> InvitationCodes { get; set; }
+
+    public virtual DbSet<InvitationCodeUsage> InvitationCodeUsages { get; set; }
+
     public virtual DbSet<NotificationSetting> NotificationSettings { get; set; }
 
     public virtual DbSet<ProductivityMetric> ProductivityMetrics { get; set; }
@@ -62,8 +66,15 @@ public partial class ToDoListAreaDbContext : DbContext
     public virtual DbSet<UserSession> UserSessions { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("server=.;user id=sa;password=Qwer1234;trustservercertificate=true;database=ToDoListArea");
+    {
+        // 连接字符串应该从配置文件中读取，而不是硬编码
+        // 这个方法在使用依赖注入时通常不会被调用
+        if (!optionsBuilder.IsConfigured)
+        {
+            // 仅在未配置时提供默认配置（开发环境）
+            optionsBuilder.UseSqlServer("Server=.;Database=ToDoListArea;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=true");
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -130,6 +141,94 @@ public partial class ToDoListAreaDbContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.GanttData)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK__gantt_dat__user___245D67DE");
+        });
+
+        modelBuilder.Entity<InvitationCode>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__invitati__3213E83F1F655162");
+
+            entity.ToTable("invitation_codes");
+
+            entity.HasIndex(e => e.Code, "UQ__invitati__357D4CF98A24A5A6").IsUnique();
+
+            entity.HasIndex(e => e.Code, "idx_invitation_codes_code");
+
+            entity.HasIndex(e => e.CreatedBy, "idx_invitation_codes_created_by");
+
+            entity.HasIndex(e => e.ExpiresAt, "idx_invitation_codes_expires_at");
+
+            entity.HasIndex(e => e.Status, "idx_invitation_codes_status");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("id");
+            entity.Property(e => e.Code)
+                .HasMaxLength(32)
+                .IsUnicode(false)
+                .HasColumnName("code");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnName("created_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.ExpiresAt).HasColumnName("expires_at");
+            entity.Property(e => e.MaxUses)
+                .HasDefaultValue(1)
+                .HasColumnName("max_uses");
+            entity.Property(e => e.Status)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasDefaultValue("active")
+                .HasColumnName("status");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.UsedCount).HasColumnName("used_count");
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.InvitationCodes)
+                .HasForeignKey(d => d.CreatedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_invitation_codes_created_by");
+        });
+
+        modelBuilder.Entity<InvitationCodeUsage>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__invitati__3213E83FE15E98B4");
+
+            entity.ToTable("invitation_code_usages");
+
+            entity.HasIndex(e => new { e.InvitationCodeId, e.UserId }, "UK_invitation_code_usages_code_user").IsUnique();
+
+            entity.HasIndex(e => e.InvitationCodeId, "idx_invitation_code_usages_invitation_code");
+
+            entity.HasIndex(e => e.UsedAt, "idx_invitation_code_usages_used_at");
+
+            entity.HasIndex(e => e.UserId, "idx_invitation_code_usages_user");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("id");
+            entity.Property(e => e.InvitationCodeId).HasColumnName("invitation_code_id");
+            entity.Property(e => e.IpAddress)
+                .HasMaxLength(45)
+                .IsUnicode(false)
+                .HasColumnName("ip_address");
+            entity.Property(e => e.UsedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnName("used_at");
+            entity.Property(e => e.UserAgent)
+                .HasMaxLength(500)
+                .HasColumnName("user_agent");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+
+            entity.HasOne(d => d.InvitationCode).WithMany(p => p.InvitationCodeUsages)
+                .HasForeignKey(d => d.InvitationCodeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_invitation_code_usages_invitation_code");
+
+            entity.HasOne(d => d.User).WithMany(p => p.InvitationCodeUsages)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_invitation_code_usages_user");
         });
 
         modelBuilder.Entity<NotificationSetting>(entity =>
@@ -771,6 +870,8 @@ public partial class ToDoListAreaDbContext : DbContext
 
             entity.HasIndex(e => e.Email, "idx_users_email");
 
+            entity.HasIndex(e => e.Role, "idx_users_role");
+
             entity.HasIndex(e => e.Status, "idx_users_status");
 
             entity.Property(e => e.Id)
@@ -799,6 +900,11 @@ public partial class ToDoListAreaDbContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("phone");
             entity.Property(e => e.PhoneVerified).HasColumnName("phone_verified");
+            entity.Property(e => e.Role)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasDefaultValue("user")
+                .HasColumnName("role");
             entity.Property(e => e.Status)
                 .HasMaxLength(20)
                 .IsUnicode(false)

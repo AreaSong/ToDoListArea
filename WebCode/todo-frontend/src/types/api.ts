@@ -14,6 +14,7 @@ export interface User {
   phone?: string;
   avatarUrl?: string;
   status: string;
+  role: string;
   emailVerified: boolean;
   phoneVerified: boolean;
   lastLoginAt?: string;
@@ -25,6 +26,7 @@ export interface UserRegisterDto {
   password: string;
   name: string;
   phone?: string;
+  invitationCode: string;
 }
 
 export interface UserLoginDto {
@@ -36,6 +38,116 @@ export interface LoginResponse {
   token: string;
   user: User;
   expiresAt: string;
+}
+
+// 邀请码相关类型
+export interface InvitationCode {
+  id: string;
+  code: string;
+  maxUses: number;
+  usedCount: number;
+  remainingUses: number;
+  expiresAt?: string;
+  isExpired: boolean;
+  isAvailable: boolean;
+  status: string;
+  createdBy: string;
+  createdByName: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface InvitationCodeValidation {
+  isValid: boolean;
+  message: string;
+  invitationCode?: InvitationCode;
+}
+
+export interface ValidateInvitationCodeDto {
+  code: string;
+}
+
+// 管理员相关类型
+export interface AdminUser {
+  id: string;
+  email: string;
+  name: string;
+  phone?: string;
+  avatarUrl?: string;
+  status: string;
+  role: string;
+  emailVerified: boolean;
+  phoneVerified: boolean;
+  lastLoginAt?: string;
+  createdAt: string;
+  updatedAt: string;
+  taskCount: number;
+}
+
+export interface AdminUserDetail extends AdminUser {
+  completedTaskCount: number;
+  invitationCodeUsed?: string;
+  permissions: string[];
+}
+
+export interface AdminTask {
+  id: string;
+  title: string;
+  description?: string;
+  status: string;
+  priority: string;
+  dueDate?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UpdateUserRoleDto {
+  role: string;
+}
+
+export interface UpdateUserStatusDto {
+  status: string;
+}
+
+export interface AdminStats {
+  totalUsers: number;
+  activeUsers: number;
+  adminUsers: number;
+  totalTasks: number;
+  completedTasks: number;
+  todayRegistrations: number;
+  weekRegistrations: number;
+  monthRegistrations: number;
+  invitationCodeStats?: InvitationCodeStats;
+}
+
+export interface InvitationCodeStats {
+  totalCodes: number;
+  activeCodes: number;
+  disabledCodes: number;
+  expiredCodes: number;
+  totalUsages: number;
+  todayUsages: number;
+  weekUsages: number;
+  monthUsages: number;
+}
+
+export interface AdminUserQuery {
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  role?: string;
+  status?: string;
+}
+
+export interface PagedResult<T> {
+  items: T[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
 }
 
 // 任务状态枚举（与后端TodoTaskStatus对应）

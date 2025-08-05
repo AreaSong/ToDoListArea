@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, Input, Button, Card, Typography, message, Divider, App } from 'antd';
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
-import { userApi } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 import type { UserLoginDto } from '../types/api';
 import { EnhancedInput, EnhancedForm } from '../components/EnhancedForm';
 import { LoadingSpinner } from '../components/LoadingSpinner';
@@ -15,28 +15,19 @@ const LoginPage: React.FC = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const { message: messageApi } = App.useApp();
+  const { login } = useAuth();
 
   const onFinish = async (values: UserLoginDto) => {
     setLoading(true);
     feedback.showLoading('正在登录...');
 
     try {
-      const response = await userApi.login(values);
+      // 使用AuthContext的login方法
+      await login(values);
 
-      if (response.success && response.data) {
-        // 保存token和用户信息
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-
-        feedback.hideLoading();
-        feedback.operationSuccess('登录');
-        navigate('/dashboard');
-      } else {
-        feedback.hideLoading();
-        // 使用更具体的错误消息
-        const errorMsg = response.message || '登录失败，请检查用户名和密码';
-        messageApi.error(errorMsg);
-      }
+      feedback.hideLoading();
+      feedback.operationSuccess('登录');
+      navigate('/dashboard');
     } catch (error: any) {
       console.error('Login error:', error);
       feedback.hideLoading();

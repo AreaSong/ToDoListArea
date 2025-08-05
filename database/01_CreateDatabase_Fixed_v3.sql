@@ -38,6 +38,7 @@ CREATE TABLE users (
     name VARCHAR(100) NOT NULL,
     avatar_url NVARCHAR(MAX) NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'active',
+    role VARCHAR(20) NOT NULL DEFAULT 'user', -- 用户角色：admin, user
     email_verified BIT NOT NULL DEFAULT 0,
     phone_verified BIT NOT NULL DEFAULT 0,
     last_login_at DATETIME2 NULL,
@@ -46,7 +47,42 @@ CREATE TABLE users (
 );
 GO
 
--- 2. 任务分类表
+-- 2. 邀请码表
+CREATE TABLE invitation_codes (
+    id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    code VARCHAR(32) UNIQUE NOT NULL, -- 邀请码
+    max_uses INTEGER NOT NULL DEFAULT 1, -- 最大使用次数
+    used_count INTEGER NOT NULL DEFAULT 0, -- 已使用次数
+    expires_at DATETIME2 NULL, -- 过期时间，NULL表示永不过期
+    status VARCHAR(20) NOT NULL DEFAULT 'active', -- 状态：active, disabled
+    created_by UNIQUEIDENTIFIER NOT NULL, -- 创建者ID
+    created_at DATETIME2 NOT NULL DEFAULT GETDATE(),
+    updated_at DATETIME2 NOT NULL DEFAULT GETDATE(),
+
+    -- 外键约束
+    CONSTRAINT FK_invitation_codes_created_by FOREIGN KEY (created_by) REFERENCES users(id)
+);
+GO
+
+-- 3. 邀请码使用记录表
+CREATE TABLE invitation_code_usages (
+    id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    invitation_code_id UNIQUEIDENTIFIER NOT NULL, -- 邀请码ID
+    user_id UNIQUEIDENTIFIER NOT NULL, -- 使用者ID
+    used_at DATETIME2 NOT NULL DEFAULT GETDATE(), -- 使用时间
+    ip_address VARCHAR(45) NULL, -- 使用者IP地址
+    user_agent NVARCHAR(500) NULL, -- 用户代理信息
+
+    -- 外键约束
+    CONSTRAINT FK_invitation_code_usages_invitation_code FOREIGN KEY (invitation_code_id) REFERENCES invitation_codes(id),
+    CONSTRAINT FK_invitation_code_usages_user FOREIGN KEY (user_id) REFERENCES users(id),
+
+    -- 唯一约束：同一用户不能重复使用同一邀请码
+    CONSTRAINT UK_invitation_code_usages_code_user UNIQUE (invitation_code_id, user_id)
+);
+GO
+
+-- 5. 任务分类表
 CREATE TABLE task_categories (
     id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
     name VARCHAR(100) NOT NULL,
@@ -60,7 +96,7 @@ CREATE TABLE task_categories (
 );
 GO
 
--- 3. 系统配置表
+-- 6. 系统配置表
 CREATE TABLE system_configs (
     id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
     config_key VARCHAR(100) UNIQUE NOT NULL,
@@ -72,7 +108,7 @@ CREATE TABLE system_configs (
 );
 GO
 
--- 4. 功能开关表
+-- 7. 功能开关表
 CREATE TABLE feature_flags (
     id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
     flag_key VARCHAR(100) UNIQUE NOT NULL,

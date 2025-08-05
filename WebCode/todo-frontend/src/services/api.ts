@@ -15,7 +15,17 @@ import type {
   UserActivity,
   CreateUserActivity,
   UserActivityStats,
-  UserActivityQuery
+  UserActivityQuery,
+  InvitationCodeValidation,
+  ValidateInvitationCodeDto,
+  AdminUser,
+  AdminUserDetail,
+  AdminTask,
+  AdminStats,
+  AdminUserQuery,
+  UpdateUserRoleDto,
+  UpdateUserStatusDto,
+  PagedResult
 } from '../types/api';
 
 // 创建axios实例
@@ -66,6 +76,65 @@ export const userApi = {
   // 更新用户信息
   updateProfile: (userId: string, data: Partial<User>): Promise<ApiResponse<User>> =>
     api.put(`/user/profile/${userId}`, data).then(res => res.data),
+};
+
+// 邀请码API
+export const invitationCodeApi = {
+  // 验证邀请码（公开接口）
+  validate: (data: ValidateInvitationCodeDto): Promise<ApiResponse<InvitationCodeValidation>> =>
+    api.post('/invitationcode/validate', data).then(res => res.data),
+
+  // 获取邀请码列表（管理员）
+  getList: (params?: {
+    page?: number;
+    pageSize?: number;
+    status?: string;
+    search?: string;
+  }): Promise<ApiResponse<any>> =>
+    api.get('/invitationcode', { params }).then(res => res.data),
+
+  // 创建邀请码（管理员）
+  create: (data: {
+    code?: string;
+    maxUses: number;
+    expiresAt?: string;
+  }): Promise<ApiResponse<any>> =>
+    api.post('/invitationcode', data).then(res => res.data),
+
+  // 更新邀请码（管理员）
+  update: (id: string, data: {
+    maxUses?: number;
+    expiresAt?: string;
+  }): Promise<ApiResponse<any>> =>
+    api.put(`/invitationcode/${id}`, data).then(res => res.data),
+
+  // 删除邀请码（管理员）
+  delete: (id: string): Promise<ApiResponse<any>> =>
+    api.delete(`/invitationcode/${id}`).then(res => res.data),
+
+  // 启用/禁用邀请码（管理员）
+  setStatus: (id: string, enabled: boolean): Promise<ApiResponse<any>> =>
+    api.patch(`/invitationcode/${id}/status`, enabled).then(res => res.data),
+
+  // 获取邀请码统计信息（管理员）
+  getStats: (): Promise<ApiResponse<any>> =>
+    api.get('/invitationcode/stats').then(res => res.data),
+
+  // 获取邀请码使用记录（管理员）
+  getUsages: (id: string, params?: {
+    page?: number;
+    pageSize?: number;
+  }): Promise<ApiResponse<any>> =>
+    api.get(`/invitationcode/${id}/usages`, { params }).then(res => res.data),
+
+  // 获取所有使用记录（管理员）
+  getAllUsages: (params?: {
+    page?: number;
+    pageSize?: number;
+    invitationCodeId?: string;
+    userId?: string;
+  }): Promise<ApiResponse<any>> =>
+    api.get('/invitationcode/usages', { params }).then(res => res.data),
 };
 
 // 用户详细资料API
@@ -259,6 +328,33 @@ export const categoryApi = {
   // 删除分类
   deleteCategory: (categoryId: string): Promise<ApiResponse<null>> =>
     api.delete(`/taskcategory/${categoryId}`).then(res => res.data),
+};
+
+// 管理员API
+export const adminApi = {
+  // 获取用户列表
+  getUsers: (query: AdminUserQuery): Promise<ApiResponse<PagedResult<AdminUser>>> =>
+    api.get('/admin/users', { params: query }).then(res => res.data),
+
+  // 获取用户详情
+  getUserDetail: (userId: string): Promise<ApiResponse<AdminUserDetail>> =>
+    api.get(`/admin/users/${userId}`).then(res => res.data),
+
+  // 更新用户角色
+  updateUserRole: (userId: string, data: UpdateUserRoleDto): Promise<ApiResponse<boolean>> =>
+    api.put(`/admin/users/${userId}/role`, data).then(res => res.data),
+
+  // 更新用户状态
+  updateUserStatus: (userId: string, data: UpdateUserStatusDto): Promise<ApiResponse<boolean>> =>
+    api.put(`/admin/users/${userId}/status`, data).then(res => res.data),
+
+  // 获取用户的待办事项
+  getUserTasks: (userId: string, page?: number, pageSize?: number): Promise<ApiResponse<PagedResult<AdminTask>>> =>
+    api.get(`/admin/users/${userId}/tasks`, { params: { page, pageSize } }).then(res => res.data),
+
+  // 获取系统统计信息
+  getStats: (): Promise<ApiResponse<AdminStats>> =>
+    api.get('/admin/stats').then(res => res.data),
 };
 
 export default api;

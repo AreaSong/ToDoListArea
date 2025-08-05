@@ -32,9 +32,11 @@ namespace ToDoListArea.Services
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role),
                 new Claim("user_id", user.Id.ToString()),
                 new Claim("email", user.Email),
-                new Claim("name", user.Name)
+                new Claim("name", user.Name),
+                new Claim("role", user.Role)
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor

@@ -11,11 +11,13 @@ namespace ToDoListArea.Services
     {
         private readonly ToDoListAreaDbContext _context;
         private readonly IJwtService _jwtService;
+        private readonly IInvitationCodeService _invitationCodeService;
 
-        public UserService(ToDoListAreaDbContext context, IJwtService jwtService)
+        public UserService(ToDoListAreaDbContext context, IJwtService jwtService, IInvitationCodeService invitationCodeService)
         {
             _context = context;
             _jwtService = jwtService;
+            _invitationCodeService = invitationCodeService;
         }
 
         /// <summary>
@@ -25,6 +27,13 @@ namespace ToDoListArea.Services
         {
             try
             {
+                // 验证邀请码
+                var invitationValidation = await _invitationCodeService.ValidateAsync(request.InvitationCode);
+                if (!invitationValidation.IsSuccess || !invitationValidation.Data!.IsValid)
+                {
+                    return ServiceResult<User>.Failure(invitationValidation.Data?.Message ?? "邀请码无效", "INVALID_INVITATION_CODE");
+                }
+
                 // 检查邮箱是否已存在
                 if (await _context.Users.AnyAsync(u => u.Email.ToLower() == request.Email.ToLower()))
                 {
@@ -40,6 +49,7 @@ namespace ToDoListArea.Services
                     Phone = request.Phone,
                     PasswordHash = PasswordHelper.HashPassword(request.Password),
                     Status = "active",
+                    Role = "user", // 默认角色为普通用户
                     EmailVerified = false,
                     PhoneVerified = false,
                     CreatedAt = DateTime.Now,
@@ -48,6 +58,21 @@ namespace ToDoListArea.Services
 
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
+
+                // 使用邀请码
+                var useResult = await _invitationCodeService.UseAsync(
+                    request.InvitationCode,
+                    user.Id,
+                    null, // IP地址在控制器层获取
+                    null  // User Agent在控制器层获取
+                );
+
+                if (!useResult.IsSuccess)
+                {
+                    // 如果邀请码使用失败，记录日志但不影响注册流程
+                    // 因为用户已经创建成功
+                    // 可以考虑在这里添加日志记录
+                }
 
                 return ServiceResult<User>.Success(user);
             }
@@ -77,8 +102,8 @@ namespace ToDoListArea.Services
                     return ServiceResult<UserLoginResponse>.Failure("密码错误", "INVALID_PASSWORD");
                 }
 
-                // 检查用户状态
-                if (user.Status != "active")
+                // 检查用户状态 - 使用不区分大小写的比较
+                if (!string.Equals(user.Status, "active", StringComparison.OrdinalIgnoreCase))
                 {
                     return ServiceResult<UserLoginResponse>.Failure("账户已被禁用", "ACCOUNT_DISABLED");
                 }

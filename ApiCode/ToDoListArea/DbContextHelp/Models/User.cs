@@ -29,7 +29,13 @@ public partial class User
 
     public DateTime UpdatedAt { get; set; }
 
+    public string Role { get; set; } = null!;
+
     public virtual ICollection<GanttDatum> GanttData { get; set; } = new List<GanttDatum>();
+
+    public virtual ICollection<InvitationCodeUsage> InvitationCodeUsages { get; set; } = new List<InvitationCodeUsage>();
+
+    public virtual ICollection<InvitationCode> InvitationCodes { get; set; } = new List<InvitationCode>();
 
     public virtual ICollection<NotificationSetting> NotificationSettings { get; set; } = new List<NotificationSetting>();
 
