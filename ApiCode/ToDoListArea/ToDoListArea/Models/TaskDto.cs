@@ -72,9 +72,10 @@ namespace ToDoListArea.Models
         public DateTime? EndTime { get; set; }
         public int? EstimatedDuration { get; set; }
         public int? ActualDuration { get; set; }
+        public int CompletionPercentage { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        
+
         // 关联信息
         public string? CategoryName { get; set; }
         public string? ParentTaskTitle { get; set; }

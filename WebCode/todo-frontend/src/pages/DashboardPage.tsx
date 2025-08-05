@@ -26,7 +26,10 @@ import {
   LogoutOutlined,
   SettingOutlined,
   BellOutlined,
-  BarChartOutlined
+  BarChartOutlined,
+  FileTextOutlined,
+  ClockCircleOutlined,
+  EyeOutlined
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { taskApi, categoryApi } from '../services/api';
@@ -299,17 +302,24 @@ const DashboardPage: React.FC = () => {
       key: 'action',
       render: (_: any, record: Task) => (
         <Space size="middle">
-          <Button 
-            type="link" 
-            icon={<EditOutlined />} 
+          <Button
+            type="link"
+            icon={<EyeOutlined />}
+            onClick={() => navigate(`/task/${record.id}`)}
+          >
+            详情
+          </Button>
+          <Button
+            type="link"
+            icon={<EditOutlined />}
             onClick={() => handleEdit(record)}
           >
             编辑
           </Button>
-          <Button 
-            type="link" 
-            danger 
-            icon={<DeleteOutlined />} 
+          <Button
+            type="link"
+            danger
+            icon={<DeleteOutlined />}
             onClick={() => handleDelete(record.id)}
           >
             删除
@@ -359,6 +369,18 @@ const DashboardPage: React.FC = () => {
                 onClick={() => navigate('/gantt')}
               >
                 甘特图
+              </Button>
+              <Button
+                icon={<ClockCircleOutlined />}
+                onClick={() => navigate('/activity')}
+              >
+                活动记录
+              </Button>
+              <Button
+                icon={<FileTextOutlined />}
+                onClick={() => navigate('/templates')}
+              >
+                模板管理
               </Button>
               <Button
                 type="primary"

@@ -1,0 +1,46 @@
+### 测试用户资料管理API
+
+### 1. 用户登录获取Token (先获取有效的JWT Token)
+POST http://localhost:5006/api/User/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "Test123456"
+}
+
+### 2. 获取用户详细资料 (需要替换userId和token)
+GET http://localhost:5006/api/UserProfile/{{userId}}
+Authorization: Bearer {{token}}
+
+### 3. 更新用户详细资料 (需要替换userId和token)
+PUT http://localhost:5006/api/UserProfile/{{userId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "firstName": "张",
+  "lastName": "三",
+  "timezone": "Asia/Shanghai",
+  "language": "zh-CN",
+  "dateFormat": "YYYY-MM-DD",
+  "timeFormat": "24h",
+  "notificationPreferences": {
+    "email": true,
+    "push": true,
+    "desktop": true,
+    "quietHours": {
+      "start": "22:00",
+      "end": "08:00"
+    }
+  },
+  "themePreferences": {
+    "theme": "light",
+    "primaryColor": "#1890ff",
+    "compactMode": false
+  }
+}
+
+### 4. 测试获取不存在用户的资料 (应该自动创建默认资料)
+GET http://localhost:5006/api/UserProfile/00000000-0000-0000-0000-000000000001
+Authorization: Bearer {{token}}

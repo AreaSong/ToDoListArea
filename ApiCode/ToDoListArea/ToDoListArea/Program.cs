@@ -50,7 +50,35 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = jwtSettings?.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(jwtSettings?.SecretKey ?? "")),
-            ClockSkew = TimeSpan.Zero
+            ClockSkew = TimeSpan.FromMinutes(5), // 减少时钟偏差容忍度
+            RequireExpirationTime = true,
+            RequireSignedTokens = true,
+            SaveSigninToken = false, // 不保存令牌
+            ValidAlgorithms = new[] { SecurityAlgorithms.HmacSha256 }
+        };
+
+        // 配置JWT事件处理
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+                logger.LogWarning("JWT authentication failed for {Path}: {Error}",
+                    context.Request.Path, context.Exception.Message);
+                return Task.CompletedTask;
+            },
+            OnChallenge = context =>
+            {
+                context.HandleResponse();
+                context.Response.StatusCode = 401;
+                context.Response.ContentType = "application/json";
+                var result = JsonSerializer.Serialize(new {
+                    error = "未授权访问",
+                    message = "请提供有效的访问令牌",
+                    timestamp = DateTime.UtcNow
+                });
+                return context.Response.WriteAsync(result);
+            }
         };
     });
 
@@ -76,17 +104,50 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<DataConsistencyService>();
 
+// 注册监控和日志服务
+builder.Services.AddSingleton<IMetricsService, MetricsService>();
+builder.Services.AddScoped<ILoggingService, LoggingService>();
+
 // Add services to the container.
 builder.Services.AddControllers();
 
-// 配置CORS
+// 添加健康检查服务
+builder.Services.AddHealthChecks()
+    .AddDbContext<ToDoListAreaDbContext>(name: "database")
+    .AddCheck("self", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy());
+
+// 配置CORS - 生产环境安全策略
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    // 开发环境策略
+    options.AddPolicy("Development", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("http://localhost:5173", "http://localhost:5174", "http://localhost:3000")
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+
+    // 生产环境策略
+    options.AddPolicy("Production", policy =>
+    {
+        var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>()
+                           ?? new[] { "https://localhost", "https://your-domain.com" };
+
+        policy.WithOrigins(allowedOrigins)
+              .WithHeaders("Content-Type", "Authorization", "X-Requested-With")
+              .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+              .AllowCredentials()
+              .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
+    });
+
+    // 默认策略（最严格）
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("https://localhost")
+              .WithHeaders("Content-Type", "Authorization")
+              .WithMethods("GET", "POST")
+              .AllowCredentials();
     });
 });
 
@@ -157,15 +218,35 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+// 使用安全头中间件
+app.UseSecurityHeaders();
+
+// 使用监控中间件
+app.UseMetricsCollection();
+app.UsePerformanceMonitoring();
+
 // 使用全局异常处理中间件
 app.UseGlobalExceptionHandling();
 
-// 使用CORS
-app.UseCors("AllowAll");
+// 使用CORS - 根据环境选择策略
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors("Development");
+}
+else
+{
+    app.UseCors("Production");
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+// 使用用户活动追踪中间件
+app.UseUserActivityTracking();
+
 app.MapControllers();
+
+// 映射健康检查端点
+app.MapHealthChecks("/health");
 
 app.Run();

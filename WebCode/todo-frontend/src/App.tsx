@@ -1,9 +1,11 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ConfigProvider, Spin } from 'antd';
-import zhCN from 'antd/locale/zh_CN';
+
 import ErrorBoundary from './components/ErrorBoundary';
+import { LoadingPage } from './components/LoadingSpinner';
+import { ThemeProvider } from './contexts/ThemeContext';
 import './App.css';
+import './styles/theme.css';
 
 // 懒加载页面组件
 const LoginPage = React.lazy(() => import('./pages/LoginPage'));
@@ -11,20 +13,17 @@ const RegisterPage = React.lazy(() => import('./pages/RegisterPage'));
 const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
 const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
 const GanttPage = React.lazy(() => import('./pages/GanttPage'));
+const TemplatesPage = React.lazy(() => import('./pages/TemplatesPage'));
+const TaskDetailsPage = React.lazy(() => import('./pages/TaskDetailsPage'));
+const ActivityPage = React.lazy(() => import('./pages/ActivityPage'));
 
 // 加载组件
 const PageLoading: React.FC = () => (
-  <div style={{
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    flexDirection: 'column',
-    gap: '16px'
-  }}>
-    <Spin size="large" />
-    <div style={{ color: '#666' }}>页面加载中...</div>
-  </div>
+  <LoadingPage
+    title="页面加载中"
+    description="正在为您准备页面内容..."
+    timeout={8000}
+  />
 );
 
 // 简单的认证检查
@@ -36,21 +35,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
-      <ConfigProvider
-        locale={zhCN}
-        theme={{
-          token: {
-            fontSize: 14,
-            borderRadius: 6,
-          },
-          components: {
-            Layout: {
-              bodyBg: '#f5f5f5',
-              headerBg: '#ffffff',
-            },
-          },
-        }}
-      >
+      <ThemeProvider>
         <Router>
           <div className="App">
             <Suspense fallback={<PageLoading />}>
@@ -84,6 +69,30 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/templates"
+                element={
+                  <ProtectedRoute>
+                    <TemplatesPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/task/:taskId"
+                element={
+                  <ProtectedRoute>
+                    <TaskDetailsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/activity"
+                element={
+                  <ProtectedRoute>
+                    <ActivityPage />
+                  </ProtectedRoute>
+                }
+              />
 
               {/* 默认重定向 */}
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -91,7 +100,7 @@ const App: React.FC = () => {
           </Suspense>
         </div>
       </Router>
-    </ConfigProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 };

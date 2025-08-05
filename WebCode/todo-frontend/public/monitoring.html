@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDoListArea - 监控仪表板</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+
+        .metric-card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-healthy { background-color: #52c41a; }
+        .status-warning { background-color: #faad14; }
+        .status-error { background-color: #f5222d; }
+
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        .refresh-btn:hover {
+            background: #5a67d8;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .error {
+            background: #fff2f0;
+            border: 1px solid #ffccc7;
+            color: #a8071a;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .timestamp {
+            color: #666;
+            font-size: 0.8rem;
+            text-align: right;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 ToDoListArea 监控仪表板</h1>
+    </div>
+
+    <div class="container">
+        <button class="refresh-btn" onclick="refreshMetrics()">🔄 刷新数据</button>
+        
+        <div id="error-message" class="error" style="display: none;"></div>
+        
+        <div id="loading" class="loading">
+            <p>正在加载监控数据...</p>
+        </div>
+
+        <div id="metrics-container" style="display: none;">
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <h3><span class="status-indicator status-healthy"></span>系统状态</h3>
+                    <div class="metric-value" id="system-status">健康</div>
+                    <div class="metric-label">应用程序运行状态</div>
+                </div>
+
+                <div class="metric-card">
+                    <h3>⏱️ 运行时间</h3>
+                    <div class="metric-value" id="uptime">--</div>
+                    <div class="metric-label">系统运行时长</div>
+                </div>
+
+                <div class="metric-card">
+                    <h3>💾 内存使用</h3>
+                    <div class="metric-value" id="memory-usage">-- MB</div>
+                    <div class="metric-label">工作集内存</div>
+                </div>
+
+                <div class="metric-card">
+                    <h3>🧵 线程数</h3>
+                    <div class="metric-value" id="thread-count">--</div>
+                    <div class="metric-label">活跃线程数量</div>
+                </div>
+
+                <div class="metric-card">
+                    <h3>🌐 HTTP 请求</h3>
+                    <div class="metric-value" id="http-requests">--</div>
+                    <div class="metric-label">总请求数</div>
+                </div>
+
+                <div class="metric-card">
+                    <h3>⚡ 平均响应时间</h3>
+                    <div class="metric-value" id="avg-response-time">-- ms</div>
+                    <div class="metric-label">HTTP请求平均耗时</div>
+                </div>
+            </div>
+
+            <div class="timestamp" id="last-updated">
+                最后更新: --
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let refreshInterval;
+
+        async function refreshMetrics() {
+            const loadingEl = document.getElementById('loading');
+            const containerEl = document.getElementById('metrics-container');
+            const errorEl = document.getElementById('error-message');
+
+            try {
+                loadingEl.style.display = 'block';
+                containerEl.style.display = 'none';
+                errorEl.style.display = 'none';
+
+                // 获取健康状态
+                const healthResponse = await fetch('/health/detailed');
+                const healthData = await healthResponse.json();
+
+                // 获取系统状态
+                const systemResponse = await fetch('/api/metrics/system-status');
+                const systemData = await systemResponse.json();
+
+                // 更新UI
+                updateMetrics(healthData, systemData);
+
+                loadingEl.style.display = 'none';
+                containerEl.style.display = 'block';
+
+            } catch (error) {
+                console.error('获取监控数据失败:', error);
+                loadingEl.style.display = 'none';
+                errorEl.style.display = 'block';
+                errorEl.textContent = `获取监控数据失败: ${error.message}`;
+            }
+        }
+
+        function updateMetrics(healthData, systemData) {
+            // 更新系统状态
+            const statusEl = document.getElementById('system-status');
+            const isHealthy = healthData.status === 'healthy';
+            statusEl.textContent = isHealthy ? '健康' : '异常';
+            statusEl.parentElement.querySelector('.status-indicator').className = 
+                `status-indicator ${isHealthy ? 'status-healthy' : 'status-error'}`;
+
+            // 更新运行时间
+            document.getElementById('uptime').textContent = systemData.uptime || '--';
+
+            // 更新内存使用
+            document.getElementById('memory-usage').textContent = systemData.memory?.working_set || '-- MB';
+
+            // 更新线程数
+            document.getElementById('thread-count').textContent = systemData.threads || '--';
+
+            // 更新时间戳
+            document.getElementById('last-updated').textContent = 
+                `最后更新: ${new Date().toLocaleString('zh-CN')}`;
+        }
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshMetrics();
+            
+            // 每30秒自动刷新
+            refreshInterval = setInterval(refreshMetrics, 30000);
+        });
+
+        // 页面卸载时清理定时器
+        window.addEventListener('beforeunload', function() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+        });
+    </script>
+</body>
+</html>

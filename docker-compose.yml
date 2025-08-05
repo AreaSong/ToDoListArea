@@ -1,0 +1,103 @@
+version: '3.8'
+
+services:
+  # 数据库服务
+  database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: todolist-database
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${DB_SA_PASSWORD:-TodoList@2024!}
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - db_data:/var/opt/mssql
+      - ./Scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    networks:
+      - todolist-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${DB_SA_PASSWORD:-TodoList@2024!} -Q 'SELECT 1'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # 后端API服务
+  backend:
+    build:
+      context: ./ApiCode/ToDoListArea/ToDoListArea
+      dockerfile: Dockerfile
+    container_name: todolist-backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Production}
+      - ASPNETCORE_URLS=http://+:5006
+      - ConnectionStrings__DefaultConnection=Server=database,1433;Database=ToDoListArea;User Id=sa;Password=${DB_SA_PASSWORD:-TodoList@2024!};TrustServerCertificate=true;
+      - JwtSettings__SecretKey=${JWT_SECRET_KEY:-your-super-secret-jwt-key-that-is-at-least-32-characters-long}
+      - JwtSettings__Issuer=${JWT_ISSUER:-ToDoListArea}
+      - JwtSettings__Audience=${JWT_AUDIENCE:-ToDoListArea-Users}
+      - JwtSettings__ExpirationInMinutes=${JWT_EXPIRATION:-60}
+    ports:
+      - "5006:5006"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - todolist-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5006/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # 前端服务
+  frontend:
+    build:
+      context: ./WebCode/todo-frontend
+      dockerfile: Dockerfile
+    container_name: todolist-frontend
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - todolist-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Redis缓存服务（可选）
+  redis:
+    image: redis:7-alpine
+    container_name: todolist-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - todolist-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  db_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  todolist-network:
+    driver: bridge

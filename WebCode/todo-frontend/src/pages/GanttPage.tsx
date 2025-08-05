@@ -5,24 +5,62 @@ import { useNavigate } from 'react-router-dom';
 import { Gantt, ViewMode } from 'gantt-task-react';
 import type { Task as GanttTask } from 'gantt-task-react';
 import 'gantt-task-react/dist/index.css';
-import { taskApi } from '../services/api';
-import type { Task as ApiTask, User } from '../types/api';
+import { taskApi, ganttDataApi } from '../services/api';
+import type { Task as ApiTask, User, GanttDataItem, GanttSyncResult, GanttConsistencyCheck } from '../types/api';
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
 
 const GanttPage: React.FC = () => {
   const [ganttTasks, setGanttTasks] = useState<GanttTask[]>([]);
+  const [ganttData, setGanttData] = useState<GanttDataItem[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.Day);
   const [loading, setLoading] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [consistencyCheck, setConsistencyCheck] = useState<GanttConsistencyCheck | null>(null);
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
   // 获取当前用户信息
   const currentUser: User = JSON.parse(localStorage.getItem('user') || '{}');
 
-  // 将API任务数据转换为甘特图格式
+  // 将甘特图数据转换为甘特图组件格式
+  const convertGanttDataToTasks = (ganttDataItems: GanttDataItem[]): GanttTask[] => {
+    if (!ganttDataItems || ganttDataItems.length === 0) {
+      return [];
+    }
+
+    return ganttDataItems.map((item) => {
+      const startDate = new Date(item.startDate);
+      const endDate = new Date(item.endDate);
+
+      // 验证日期有效性
+      if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        console.warn(`Invalid date for gantt item ${item.id}:`, item);
+        return null;
+      }
+
+      return {
+        start: startDate,
+        end: endDate,
+        name: item.taskTitle,
+        id: item.id,
+        type: 'task',
+        progress: Math.min(100, Math.max(0, item.progress)),
+        isDisabled: false,
+        styles: {
+          progressColor: item.categoryColor,
+          progressSelectedColor: item.categoryColor,
+          backgroundColor: `${item.categoryColor}20`,
+          backgroundSelectedColor: `${item.categoryColor}40`,
+        },
+        project: item.categoryName,
+      } as GanttTask;
+    }).filter((task): task is GanttTask => task !== null);
+  };
+
+  // 将API任务数据转换为甘特图格式（备用方法）
   const convertToGanttTasks = (tasks: ApiTask[]): GanttTask[] => {
     if (!tasks || tasks.length === 0) {
       return [];
@@ -127,7 +165,85 @@ const GanttPage: React.FC = () => {
     }
   };
 
-  // 获取任务数据
+  // 获取甘特图数据
+  const fetchGanttData = async () => {
+    if (!currentUser.id) {
+      message.warning('请先登录后再使用甘特图功能');
+      navigate('/login');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await ganttDataApi.getGanttData(currentUser.id);
+      if (response.success && response.data) {
+        setGanttData(response.data);
+        const ganttTasks = convertGanttDataToTasks(response.data);
+        setGanttTasks(ganttTasks);
+        message.success(`加载了 ${response.data.length} 个甘特图项目`, 2);
+      } else {
+        message.error(response.message || '获取甘特图数据失败');
+      }
+    } catch (error) {
+      console.error('获取甘特图数据失败:', error);
+      message.error('获取甘特图数据失败，请重试');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 从任务同步甘特图数据
+  const handleSyncFromTasks = async () => {
+    if (!currentUser.id) return;
+
+    setSyncing(true);
+    try {
+      const response = await ganttDataApi.syncFromTasks(currentUser.id);
+      if (response.success && response.data) {
+        const { syncedCount, updatedCount, cleanedCount, totalTasks, successRate } = response.data;
+
+        message.success({
+          content: `同步完成！处理 ${totalTasks} 个任务，新增 ${syncedCount} 个，更新 ${updatedCount} 个，清理 ${cleanedCount} 个。成功率：${successRate.toFixed(1)}%`,
+          duration: 4,
+        });
+
+        // 重新加载甘特图数据
+        await fetchGanttData();
+      } else {
+        message.error(response.message || '同步失败');
+      }
+    } catch (error) {
+      console.error('同步任务失败:', error);
+      message.error('同步任务失败，请重试');
+    } finally {
+      setSyncing(false);
+    }
+  };
+
+  // 检查数据一致性
+  const handleConsistencyCheck = async () => {
+    if (!currentUser.id) return;
+
+    try {
+      const response = await ganttDataApi.checkConsistency(currentUser.id);
+      if (response.success && response.data) {
+        setConsistencyCheck(response.data);
+
+        if (response.data.isConsistent) {
+          message.success('数据一致性检查通过！', 2);
+        } else {
+          message.warning(`发现 ${response.data.inconsistencies.length} 个数据不一致项，请查看详情`, 3);
+        }
+      } else {
+        message.error(response.message || '一致性检查失败');
+      }
+    } catch (error) {
+      console.error('一致性检查失败:', error);
+      message.error('一致性检查失败，请重试');
+    }
+  };
+
+  // 获取任务数据（备用方法）
   const fetchTasks = async () => {
     if (!currentUser.id) {
       message.warning('请先登录后再使用甘特图功能');
@@ -169,56 +285,51 @@ const GanttPage: React.FC = () => {
   // 处理任务日期变更
   const handleTaskChange = async (task: GanttTask) => {
     try {
-      const response = await taskApi.updateTask(task.id, {
-        startTime: task.start.toISOString(),
-        endTime: task.end.toISOString(),
+      const response = await ganttDataApi.updateGanttData(task.id, {
+        startDate: task.start.toISOString(),
+        endDate: task.end.toISOString(),
+        progress: task.progress,
       });
 
       if (response.success) {
-        message.success('任务时间已更新');
+        message.success('甘特图时间更新成功', 1);
         // 更新本地状态
         setGanttTasks(prev =>
           prev.map(t => t.id === task.id ? task : t)
         );
       } else {
-        message.error('任务时间更新失败');
+        message.error('甘特图时间更新失败');
         // 重新获取数据以恢复原状态
-        fetchTasks();
+        fetchGanttData();
       }
     } catch (error) {
-      message.error('任务时间更新失败');
-      fetchTasks();
+      message.error('甘特图时间更新失败');
+      fetchGanttData();
     }
   };
 
   // 处理任务进度变更
   const handleProgressChange = async (task: GanttTask) => {
     try {
-      // 根据进度计算状态
-      let status = 'Pending';
-      if (task.progress === 100) {
-        status = 'Completed';
-      } else if (task.progress > 0) {
-        status = 'InProgress';
-      }
-
-      const response = await taskApi.updateTask(task.id, {
-        status: status,
+      const response = await ganttDataApi.updateGanttData(task.id, {
+        startDate: task.start.toISOString(),
+        endDate: task.end.toISOString(),
+        progress: task.progress,
       });
 
       if (response.success) {
-        message.success('任务进度已更新');
+        message.success('甘特图进度更新成功', 1);
         // 更新本地状态
         setGanttTasks(prev =>
           prev.map(t => t.id === task.id ? task : t)
         );
       } else {
-        message.error('任务进度更新失败');
-        fetchTasks();
+        message.error('甘特图进度更新失败');
+        fetchGanttData();
       }
     } catch (error) {
-      message.error('任务进度更新失败');
-      fetchTasks();
+      message.error('甘特图进度更新失败');
+      fetchGanttData();
     }
   };
 
@@ -261,7 +372,7 @@ const GanttPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchTasks();
+    fetchGanttData();
   }, []);
 
   return (
@@ -296,12 +407,27 @@ const GanttPage: React.FC = () => {
             新建任务
           </Button>
           <Button
-            type="text"
+            type="default"
             icon={<ReloadOutlined />}
-            onClick={fetchTasks}
+            onClick={fetchGanttData}
             loading={loading}
           >
-            刷新
+            刷新数据
+          </Button>
+          <Button
+            type="default"
+            onClick={handleSyncFromTasks}
+            loading={syncing}
+            style={{ backgroundColor: '#52c41a', borderColor: '#52c41a', color: 'white' }}
+          >
+            {syncing ? '同步中...' : '从任务同步'}
+          </Button>
+          <Button
+            type="default"
+            onClick={handleConsistencyCheck}
+            style={{ backgroundColor: '#faad14', borderColor: '#faad14', color: 'white' }}
+          >
+            数据检查
           </Button>
           <Space.Compact>
             <Button 
@@ -370,6 +496,41 @@ const GanttPage: React.FC = () => {
             </Card>
           </Col>
         </Row>
+
+        {/* 数据一致性检查结果 */}
+        {consistencyCheck && !consistencyCheck.isConsistent && (
+          <Card
+            title="数据一致性检查结果"
+            style={{ marginBottom: 16 }}
+            type="inner"
+            size="small"
+          >
+            <div style={{ color: '#faad14', marginBottom: 8 }}>
+              ⚠️ 发现 {consistencyCheck.inconsistencies.length} 个数据不一致项：
+            </div>
+            <div style={{ maxHeight: '200px', overflow: 'auto' }}>
+              {consistencyCheck.inconsistencies.map((item, index) => (
+                <div key={index} style={{
+                  padding: '8px',
+                  marginBottom: '4px',
+                  backgroundColor: '#fff7e6',
+                  borderRadius: '4px',
+                  fontSize: '12px'
+                }}>
+                  <div><strong>{item.taskTitle}</strong> - {item.description}</div>
+                  <div style={{ color: '#666' }}>
+                    类型: {item.inconsistencyType} |
+                    期望值: {JSON.stringify(item.expectedValue)} |
+                    实际值: {JSON.stringify(item.actualValue)}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 8, fontSize: '12px', color: '#666' }}>
+              检查时间: {new Date(consistencyCheck.checkTime).toLocaleString()}
+            </div>
+          </Card>
+        )}
 
         <Card>
           {ganttTasks.length > 0 ? (

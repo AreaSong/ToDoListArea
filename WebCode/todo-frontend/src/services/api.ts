@@ -1,9 +1,9 @@
 import axios from 'axios';
-import type { 
-  ApiResponse, 
-  User, 
-  UserRegisterDto, 
-  UserLoginDto, 
+import type {
+  ApiResponse,
+  User,
+  UserRegisterDto,
+  UserLoginDto,
   LoginResponse,
   Task,
   TaskCreateDto,
@@ -11,7 +11,11 @@ import type {
   TaskQuery,
   PagedResponse,
   TaskCategory,
-  TaskCategoryCreateDto
+  TaskCategoryCreateDto,
+  UserActivity,
+  CreateUserActivity,
+  UserActivityStats,
+  UserActivityQuery
 } from '../types/api';
 
 // 创建axios实例
@@ -62,6 +66,153 @@ export const userApi = {
   // 更新用户信息
   updateProfile: (userId: string, data: Partial<User>): Promise<ApiResponse<User>> =>
     api.put(`/user/profile/${userId}`, data).then(res => res.data),
+};
+
+// 用户详细资料API
+export const userProfileApi = {
+  // 获取用户详细资料
+  getProfile: (userId: string): Promise<ApiResponse<UserProfileDetail>> =>
+    api.get(`/userprofile/${userId}`).then(res => res.data),
+
+  // 更新用户详细资料
+  updateProfile: (userId: string, data: UserProfileUpdate): Promise<ApiResponse<UserProfileDetail>> =>
+    api.put(`/userprofile/${userId}`, data).then(res => res.data),
+};
+
+// 甘特图数据API
+export const ganttDataApi = {
+  // 获取用户甘特图数据
+  getGanttData: (userId: string): Promise<ApiResponse<GanttDataItem[]>> =>
+    api.get(`/ganttdata/user/${userId}`).then(res => res.data),
+
+  // 更新甘特图数据
+  updateGanttData: (id: string, data: GanttDataUpdate): Promise<ApiResponse<GanttDataItem>> =>
+    api.put(`/ganttdata/${id}`, data).then(res => res.data),
+
+  // 从任务同步到甘特图
+  syncFromTasks: (userId: string): Promise<ApiResponse<GanttSyncResult>> =>
+    api.post(`/ganttdata/sync/${userId}`).then(res => res.data),
+
+  // 删除甘特图数据
+  deleteGanttData: (id: string): Promise<ApiResponse<any>> =>
+    api.delete(`/ganttdata/${id}`).then(res => res.data),
+
+  // 检查数据一致性
+  checkConsistency: (userId: string): Promise<ApiResponse<GanttConsistencyCheck>> =>
+    api.get(`/ganttdata/consistency-check/${userId}`).then(res => res.data),
+};
+
+// 任务模板API
+export const taskTemplateApi = {
+  // 获取用户模板列表
+  getUserTemplates: (userId: string, category?: string, sortBy?: string): Promise<ApiResponse<TaskTemplate[]>> =>
+    api.get(`/tasktemplate/user/${userId}`, {
+      params: { category, sortBy }
+    }).then(res => res.data),
+
+  // 获取模板详情
+  getTemplate: (id: string): Promise<ApiResponse<TaskTemplate>> =>
+    api.get(`/tasktemplate/${id}`).then(res => res.data),
+
+  // 创建模板
+  createTemplate: (data: TaskTemplateCreate): Promise<ApiResponse<TaskTemplate>> =>
+    api.post('/tasktemplate', data).then(res => res.data),
+
+  // 更新模板
+  updateTemplate: (id: string, data: TaskTemplateUpdate): Promise<ApiResponse<TaskTemplate>> =>
+    api.put(`/tasktemplate/${id}`, data).then(res => res.data),
+
+  // 删除模板
+  deleteTemplate: (id: string): Promise<ApiResponse<any>> =>
+    api.delete(`/tasktemplate/${id}`).then(res => res.data),
+
+  // 从模板创建任务
+  createTaskFromTemplate: (templateId: string, data: CreateTaskFromTemplate): Promise<ApiResponse<Task>> =>
+    api.post(`/tasktemplate/${templateId}/use`, data).then(res => res.data),
+
+  // 获取模板分类
+  getTemplateCategories: (userId: string): Promise<ApiResponse<string[]>> =>
+    api.get(`/tasktemplate/categories/${userId}`).then(res => res.data),
+
+  // 获取模板使用统计
+  getTemplateStats: (userId: string): Promise<ApiResponse<TemplateUsageStats>> =>
+    api.get(`/tasktemplate/stats/${userId}`).then(res => res.data),
+};
+
+// 任务详情API
+export const taskDetailsApi = {
+  // 获取任务所有详情
+  getTaskDetails: (taskId: string, detailType?: string): Promise<ApiResponse<TaskDetail[]>> =>
+    api.get(`/taskdetails/task/${taskId}`, {
+      params: { detailType }
+    }).then(res => res.data),
+
+  // 获取任务检查清单
+  getTaskChecklist: (taskId: string): Promise<ApiResponse<ChecklistItem[]>> =>
+    api.get(`/taskdetails/task/${taskId}/checklist`).then(res => res.data),
+
+  // 获取任务笔记
+  getTaskNotes: (taskId: string): Promise<ApiResponse<TaskNote[]>> =>
+    api.get(`/taskdetails/task/${taskId}/notes`).then(res => res.data),
+
+  // 获取任务链接
+  getTaskLinks: (taskId: string): Promise<ApiResponse<TaskLink[]>> =>
+    api.get(`/taskdetails/task/${taskId}/links`).then(res => res.data),
+
+  // 添加检查清单项
+  addChecklistItem: (taskId: string, data: CreateChecklistItem): Promise<ApiResponse<ChecklistItem>> =>
+    api.post(`/taskdetails/task/${taskId}/checklist`, data).then(res => res.data),
+
+  // 更新检查清单项
+  updateChecklistItem: (id: string, data: UpdateChecklistItem): Promise<ApiResponse<ChecklistItem>> =>
+    api.put(`/taskdetails/checklist/${id}`, data).then(res => res.data),
+
+  // 添加任务笔记
+  addTaskNote: (taskId: string, data: CreateTaskNote): Promise<ApiResponse<TaskNote>> =>
+    api.post(`/taskdetails/task/${taskId}/notes`, data).then(res => res.data),
+
+  // 添加任务链接
+  addTaskLink: (taskId: string, data: CreateTaskLink): Promise<ApiResponse<TaskLink>> =>
+    api.post(`/taskdetails/task/${taskId}/links`, data).then(res => res.data),
+
+  // 删除任务详情项
+  deleteTaskDetail: (id: string): Promise<ApiResponse<any>> =>
+    api.delete(`/taskdetails/${id}`).then(res => res.data),
+
+  // 获取任务详情统计
+  getTaskDetailsStats: (taskId: string): Promise<ApiResponse<TaskDetailsStats>> =>
+    api.get(`/taskdetails/task/${taskId}/stats`).then(res => res.data),
+
+  // 批量更新检查清单状态
+  batchUpdateChecklistStatus: (taskId: string, isCompleted: boolean): Promise<ApiResponse<BatchOperationResult>> =>
+    api.put(`/taskdetails/task/${taskId}/checklist/batch-status`, null, {
+      params: { isCompleted }
+    }).then(res => res.data),
+};
+
+// 用户活动API
+export const userActivityApi = {
+  // 获取用户活动列表
+  getUserActivities: (userId: string, params?: UserActivityQuery): Promise<ApiResponse<UserActivity[]>> =>
+    api.get(`/useractivity/user/${userId}`, { params }).then(res => res.data),
+
+  // 获取用户活动统计
+  getUserActivityStats: (userId: string, startDate?: string, endDate?: string): Promise<ApiResponse<UserActivityStats>> =>
+    api.get(`/useractivity/user/${userId}/stats`, {
+      params: { startDate, endDate }
+    }).then(res => res.data),
+
+  // 手动记录用户活动
+  createUserActivity: (data: CreateUserActivity): Promise<ApiResponse<UserActivity>> =>
+    api.post('/useractivity', data).then(res => res.data),
+
+  // 获取活动类型列表
+  getActivityTypes: (): Promise<ApiResponse<string[]>> =>
+    api.get('/useractivity/activity-types').then(res => res.data),
+
+  // 删除用户活动记录
+  deleteUserActivity: (id: string): Promise<ApiResponse<any>> =>
+    api.delete(`/useractivity/${id}`).then(res => res.data),
 };
 
 // 任务API

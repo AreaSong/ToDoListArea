@@ -361,3 +361,33 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Frontend build output
+WebCode/todo-frontend/dist/
+
+# Environment variables (敏感配置文件)
+.env
+.env.local
+.env.*.local
+WebCode/todo-frontend/.env
+WebCode/todo-frontend/.env.local
+WebCode/todo-frontend/.env.*.local
+
+# Docker and deployment
+docker-compose.override.yml
+.env.production
+开发环境部署/.env
+开发环境部署/.env.dev
+
+# SSL certificates
+ssl/
+*.crt
+*.key
+*.pem
+
+# Temporary test files
+*.tmp.tsx
+*.test.tsx.bak
+
+# IDE temporary files
+.vscode/settings.json.bak

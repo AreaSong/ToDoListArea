@@ -42,19 +42,20 @@ namespace ToDoListArea.Middleware
             context.Response.ContentType = "application/json";
 
             var response = new ErrorResponse();
+            var isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
 
             switch (exception)
             {
                 case ArgumentNullException nullEx:
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     response.Message = "必需参数不能为空";
-                    response.Details = nullEx.Message;
+                    response.Details = isDevelopment ? nullEx.Message : "请检查请求参数";
                     break;
 
                 case ArgumentException argEx:
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     response.Message = "请求参数错误";
-                    response.Details = argEx.Message;
+                    response.Details = isDevelopment ? argEx.Message : "请求参数格式不正确";
                     break;
 
                 case UnauthorizedAccessException:
@@ -66,13 +67,13 @@ namespace ToDoListArea.Middleware
                 case KeyNotFoundException:
                     response.StatusCode = (int)HttpStatusCode.NotFound;
                     response.Message = "资源未找到";
-                    response.Details = exception.Message;
+                    response.Details = isDevelopment ? exception.Message : "请求的资源不存在";
                     break;
 
                 case InvalidOperationException invalidEx:
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     response.Message = "操作无效";
-                    response.Details = invalidEx.Message;
+                    response.Details = isDevelopment ? invalidEx.Message : "当前操作不被允许";
                     break;
 
                 case TimeoutException:
@@ -91,7 +92,13 @@ namespace ToDoListArea.Middleware
                 default:
                     response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     response.Message = "服务器内部错误";
-                    response.Details = "系统发生了未知错误，请联系管理员";
+                    response.Details = isDevelopment ? exception.Message : "系统发生了未知错误，请联系管理员";
+                    // 在生产环境中，不暴露敏感的异常信息
+                    if (!isDevelopment)
+                    {
+                        response.ErrorCode = "INTERNAL_ERROR";
+                        response.TraceId = context.TraceIdentifier;
+                    }
                     break;
             }
 
@@ -141,6 +148,11 @@ namespace ToDoListArea.Middleware
         /// 请求路径
         /// </summary>
         public string? Path { get; set; }
+
+        /// <summary>
+        /// 跟踪ID
+        /// </summary>
+        public string? TraceId { get; set; }
     }
 
     /// <summary>
