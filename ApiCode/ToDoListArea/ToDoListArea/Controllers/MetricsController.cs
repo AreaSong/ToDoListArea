@@ -139,39 +139,7 @@ namespace ToDoListArea.Controllers
             }
         }
 
-        /// <summary>
-        /// 触发垃圾回收（仅用于测试）
-        /// </summary>
-        /// <returns>操作结果</returns>
-        [HttpPost("gc")]
-        public IActionResult TriggerGarbageCollection()
-        {
-            try
-            {
-                var beforeMemory = GC.GetTotalMemory(false);
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
-                var afterMemory = GC.GetTotalMemory(false);
 
-                var result = new
-                {
-                    message = "垃圾回收已执行",
-                    memory_before = $"{beforeMemory / 1024 / 1024} MB",
-                    memory_after = $"{afterMemory / 1024 / 1024} MB",
-                    memory_freed = $"{(beforeMemory - afterMemory) / 1024 / 1024} MB",
-                    timestamp = DateTime.UtcNow
-                };
-
-                _loggingService.LogUserActivity(User.Identity?.Name ?? "Unknown", "触发垃圾回收");
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "触发垃圾回收失败");
-                return StatusCode(500, new { error = "触发垃圾回收失败" });
-            }
-        }
 
         /// <summary>
         /// 获取性能计数器

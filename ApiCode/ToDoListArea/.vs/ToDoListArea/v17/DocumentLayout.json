@@ -3,8 +3,20 @@
   "WorkspaceRootPath": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|d:\\indexes\\desktop\\todolistarea\\apicode\\todolistarea\\todolistarea\\tools\\databaseinitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|solutionrelative:todolistarea\\tools\\databaseinitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|d:\\indexes\\desktop\\todolistarea\\apicode\\todolistarea\\todolistarea\\controllers\\tasktemplatecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|solutionrelative:todolistarea\\controllers\\tasktemplatecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|d:\\indexes\\desktop\\todolistarea\\apicode\\todolistarea\\todolistarea\\controllers\\taskdetailscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|solutionrelative:todolistarea\\controllers\\taskdetailscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|d:\\indexes\\desktop\\todolistarea\\apicode\\todolistarea\\todolistarea\\controllers\\ganttdatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|solutionrelative:todolistarea\\controllers\\ganttdatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|d:\\indexes\\desktop\\todolistarea\\apicode\\todolistarea\\todolistarea\\controllers\\userprofilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|solutionrelative:todolistarea\\controllers\\userprofilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|d:\\indexes\\desktop\\todolistarea\\apicode\\todolistarea\\todolistarea\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
@@ -21,10 +33,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|d:\\indexes\\desktop\\todolistarea\\apicode\\todolistarea\\todolistarea\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|solutionrelative:todolistarea\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|d:\\indexes\\desktop\\todolistarea\\apicode\\todolistarea\\todolistarea\\controllers\\taskdetailscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|solutionrelative:todolistarea\\controllers\\taskdetailscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|d:\\indexes\\desktop\\todolistarea\\apicode\\todolistarea\\todolistarea\\controllers\\invitationcodecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -55,10 +63,6 @@
       "RelativeMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|solutionrelative:todolistarea\\middleware\\roleauthorizationmiddleware.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|d:\\indexes\\desktop\\todolistarea\\apicode\\todolistarea\\todolistarea\\controllers\\ganttdatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|solutionrelative:todolistarea\\controllers\\ganttdatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|d:\\indexes\\desktop\\todolistarea\\apicode\\todolistarea\\todolistarea\\utils\\passwordhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4DC0F49D-42FE-4D94-A04E-2840C8866FEC}|ToDoListArea\\ToDoListArea.csproj|solutionrelative:todolistarea\\utils\\passwordhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -79,19 +83,32 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "DatabaseInitializer.cs",
-              "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Tools\\DatabaseInitializer.cs",
-              "RelativeDocumentMoniker": "ToDoListArea\\Tools\\DatabaseInitializer.cs",
-              "ToolTip": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Tools\\DatabaseInitializer.cs",
-              "RelativeToolTip": "ToDoListArea\\Tools\\DatabaseInitializer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFYAAAAdAAAAAAAAAA==",
+              "Title": "TaskTemplateController.cs",
+              "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Controllers\\TaskTemplateController.cs",
+              "RelativeDocumentMoniker": "ToDoListArea\\Controllers\\TaskTemplateController.cs",
+              "ToolTip": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Controllers\\TaskTemplateController.cs",
+              "RelativeToolTip": "ToDoListArea\\Controllers\\TaskTemplateController.cs",
+              "ViewState": "AgIAAPkAAAAAAAAAAAAgwAkBAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-05T19:41:49.381Z",
+              "WhenOpened": "2025-08-06T09:30:30.788Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
+              "Title": "UserProfileController.cs",
+              "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Controllers\\UserProfileController.cs",
+              "RelativeDocumentMoniker": "ToDoListArea\\Controllers\\UserProfileController.cs",
+              "ToolTip": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Controllers\\UserProfileController.cs",
+              "RelativeToolTip": "ToDoListArea\\Controllers\\UserProfileController.cs",
+              "ViewState": "AgIAADYAAAAAAAAAAAD4v1AAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-06T09:24:01.052Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\appsettings.json",
               "RelativeDocumentMoniker": "ToDoListArea\\appsettings.json",
@@ -104,20 +121,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "ToDoListAreaDbContext.cs",
-              "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\DbContextHelp\\Models\\ToDoListAreaDbContext.cs",
-              "RelativeDocumentMoniker": "DbContextHelp\\Models\\ToDoListAreaDbContext.cs",
-              "ToolTip": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\DbContextHelp\\Models\\ToDoListAreaDbContext.cs",
-              "RelativeToolTip": "DbContextHelp\\Models\\ToDoListAreaDbContext.cs",
-              "ViewState": "AgIAAEEAAAAAAAAAAAAqwEwAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-05T19:03:12.036Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "TaskCategoryController.cs",
               "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Controllers\\TaskCategoryController.cs",
               "RelativeDocumentMoniker": "ToDoListArea\\Controllers\\TaskCategoryController.cs",
@@ -129,7 +133,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "UserController.cs",
               "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Controllers\\UserController.cs",
               "RelativeDocumentMoniker": "ToDoListArea\\Controllers\\UserController.cs",
@@ -141,7 +145,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "ToDoListAreaDbContext.cs",
               "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Models\\ToDoListAreaDbContext.cs",
               "RelativeDocumentMoniker": "ToDoListArea\\Models\\ToDoListAreaDbContext.cs",
@@ -153,7 +157,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "AdminController.cs",
               "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Controllers\\AdminController.cs",
               "RelativeDocumentMoniker": "ToDoListArea\\Controllers\\AdminController.cs",
@@ -165,7 +169,45 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "GanttDataController.cs",
+              "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Controllers\\GanttDataController.cs",
+              "RelativeDocumentMoniker": "ToDoListArea\\Controllers\\GanttDataController.cs",
+              "ToolTip": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Controllers\\GanttDataController.cs",
+              "RelativeToolTip": "ToDoListArea\\Controllers\\GanttDataController.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAD4vyYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-05T16:02:04.949Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "TaskDetailsController.cs",
+              "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Controllers\\TaskDetailsController.cs",
+              "RelativeDocumentMoniker": "ToDoListArea\\Controllers\\TaskDetailsController.cs",
+              "ToolTip": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Controllers\\TaskDetailsController.cs",
+              "RelativeToolTip": "ToDoListArea\\Controllers\\TaskDetailsController.cs",
+              "ViewState": "AgIAAJUBAAAAAAAAAAAWwKsBAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-05T18:55:25.615Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 6,
+              "Title": "ToDoListAreaDbContext.cs",
+              "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\DbContextHelp\\Models\\ToDoListAreaDbContext.cs",
+              "RelativeDocumentMoniker": "DbContextHelp\\Models\\ToDoListAreaDbContext.cs",
+              "ToolTip": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\DbContextHelp\\Models\\ToDoListAreaDbContext.cs",
+              "RelativeToolTip": "DbContextHelp\\Models\\ToDoListAreaDbContext.cs",
+              "ViewState": "AgIAAEEAAAAAAAAAAAAqwEwAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-05T19:03:12.036Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
               "Title": "InvitationCodeController.cs",
               "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Controllers\\InvitationCodeController.cs",
               "RelativeDocumentMoniker": "ToDoListArea\\Controllers\\InvitationCodeController.cs",
@@ -177,7 +219,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "User.cs",
               "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\DbContextHelp\\Models\\User.cs",
               "RelativeDocumentMoniker": "DbContextHelp\\Models\\User.cs",
@@ -189,7 +231,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Program.cs",
               "RelativeDocumentMoniker": "ToDoListArea\\Program.cs",
@@ -197,24 +239,11 @@
               "RelativeToolTip": "ToDoListArea\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-03T04:54:13.031Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-03T04:54:13.031Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "TaskDetailsController.cs",
-              "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Controllers\\TaskDetailsController.cs",
-              "RelativeDocumentMoniker": "ToDoListArea\\Controllers\\TaskDetailsController.cs",
-              "ToolTip": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Controllers\\TaskDetailsController.cs",
-              "RelativeToolTip": "ToDoListArea\\Controllers\\TaskDetailsController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAPcAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-05T18:55:25.615Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "RoleAuthorizationMiddleware.cs",
               "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Middleware\\RoleAuthorizationMiddleware.cs",
               "RelativeDocumentMoniker": "ToDoListArea\\Middleware\\RoleAuthorizationMiddleware.cs",
@@ -226,7 +255,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 13,
               "Title": "InvitationCodeService.cs",
               "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Services\\InvitationCodeService.cs",
               "RelativeDocumentMoniker": "ToDoListArea\\Services\\InvitationCodeService.cs",
@@ -238,19 +267,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "GanttDataController.cs",
-              "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Controllers\\GanttDataController.cs",
-              "RelativeDocumentMoniker": "ToDoListArea\\Controllers\\GanttDataController.cs",
-              "ToolTip": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Controllers\\GanttDataController.cs",
-              "RelativeToolTip": "ToDoListArea\\Controllers\\GanttDataController.cs",
-              "ViewState": "AgIAANcAAAAAAAAAAAD4v/EAAAA8AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-05T16:02:04.949Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "PasswordHelper.cs",
               "DocumentMoniker": "D:\\indexes\\Desktop\\ToDoListArea\\ApiCode\\ToDoListArea\\ToDoListArea\\Utils\\PasswordHelper.cs",
               "RelativeDocumentMoniker": "ToDoListArea\\Utils\\PasswordHelper.cs",

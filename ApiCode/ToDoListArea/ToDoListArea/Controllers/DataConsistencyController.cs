@@ -172,38 +172,6 @@ namespace ToDoListArea.Controllers
             });
         }
 
-#if DEBUG
-        /// <summary>
-        /// 开发环境专用：无认证的数据一致性检查（仅用于调试）
-        /// </summary>
-        [HttpGet("debug/check")]
-        [AllowAnonymous] // 开发环境允许匿名访问
-        public async Task<IActionResult> DebugCheckDataConsistency()
-        {
-            try
-            {
-                var report = await _dataConsistencyService.CheckDataConsistencyAsync();
 
-                return Ok(new
-                {
-                    success = true,
-                    message = "开发环境数据一致性检查完成",
-                    environment = "Development",
-                    data = report
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "开发环境数据一致性检查失败");
-                return StatusCode(500, new
-                {
-                    success = false,
-                    message = "开发环境数据一致性检查失败",
-                    environment = "Development",
-                    error = ex.Message
-                });
-            }
-        }
-#endif
     }
 }

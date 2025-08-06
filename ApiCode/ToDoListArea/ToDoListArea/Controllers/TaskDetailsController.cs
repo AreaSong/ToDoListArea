@@ -425,7 +425,7 @@ namespace ToDoListArea.Controllers
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation("删除任务详情项成功，详情项ID: {DetailId}", id);
-                return Ok(ApiResponse<object>.SuccessResult(null, "任务详情项删除成功"));
+                return Ok(ApiResponse<object>.SuccessResult(new { }, "任务详情项删除成功"));
             }
             catch (Exception ex)
             {

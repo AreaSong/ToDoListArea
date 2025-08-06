@@ -77,9 +77,9 @@ namespace ToDoListArea.Controllers
                     DateFormat = profile.DateFormat,
                     TimeFormat = profile.TimeFormat,
                     NotificationPreferences = JsonSerializer.Deserialize<NotificationPreferencesDto>(
-                        profile.NotificationPreferences ?? "{}"),
+                        profile.NotificationPreferences ?? "{}") ?? new NotificationPreferencesDto(),
                     ThemePreferences = JsonSerializer.Deserialize<ThemePreferencesDto>(
-                        profile.ThemePreferences ?? "{}")
+                        profile.ThemePreferences ?? "{}") ?? new ThemePreferencesDto()
                 };
 
                 return Ok(ApiResponse<UserProfileDetailDto>.SuccessResult(profileDto, "获取用户资料成功"));
@@ -158,9 +158,9 @@ namespace ToDoListArea.Controllers
                     DateFormat = profile.DateFormat,
                     TimeFormat = profile.TimeFormat,
                     NotificationPreferences = JsonSerializer.Deserialize<NotificationPreferencesDto>(
-                        profile.NotificationPreferences ?? "{}"),
+                        profile.NotificationPreferences ?? "{}") ?? new NotificationPreferencesDto(),
                     ThemePreferences = JsonSerializer.Deserialize<ThemePreferencesDto>(
-                        profile.ThemePreferences ?? "{}")
+                        profile.ThemePreferences ?? "{}") ?? new ThemePreferencesDto()
                 };
 
                 return Ok(ApiResponse<UserProfileDetailDto>.SuccessResult(updatedProfileDto, "用户资料更新成功"));

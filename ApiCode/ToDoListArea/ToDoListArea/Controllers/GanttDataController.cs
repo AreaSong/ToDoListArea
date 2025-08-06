@@ -31,29 +31,30 @@ namespace ToDoListArea.Controllers
         {
             try
             {
-                var ganttData = await _context.GanttData
+                var ganttDataEntities = await _context.GanttData
                     .Where(g => g.UserId == userId)
                     .Include(g => g.Task)
                     .ThenInclude(t => t.Category)
                     .OrderBy(g => g.StartDate)
-                    .Select(g => new GanttDataDto
-                    {
-                        Id = g.Id,
-                        UserId = g.UserId,
-                        TaskId = g.TaskId,
-                        TaskTitle = g.Task.Title,
-                        TaskDescription = g.Task.Description,
-                        StartDate = g.StartDate,
-                        EndDate = g.EndDate,
-                        Progress = g.Progress,
-                        Dependencies = JsonSerializer.Deserialize<List<Guid>>(g.Dependencies ?? "[]", (JsonSerializerOptions?)null),
-                        Resources = JsonSerializer.Deserialize<List<string>>(g.Resources ?? "[]", (JsonSerializerOptions?)null),
-                        CategoryColor = g.Task.Category != null ? g.Task.Category.Color : "#1890ff",
-                        CategoryName = g.Task.Category != null ? g.Task.Category.Name : "默认分类",
-                        CreatedAt = g.CreatedAt,
-                        UpdatedAt = g.UpdatedAt
-                    })
                     .ToListAsync();
+
+                var ganttData = ganttDataEntities.Select(g => new GanttDataDto
+                {
+                    Id = g.Id,
+                    UserId = g.UserId,
+                    TaskId = g.TaskId,
+                    TaskTitle = g.Task?.Title ?? "",
+                    TaskDescription = g.Task?.Description ?? "",
+                    StartDate = g.StartDate,
+                    EndDate = g.EndDate,
+                    Progress = g.Progress,
+                    Dependencies = JsonSerializer.Deserialize<List<Guid>>(g.Dependencies ?? "[]") ?? new List<Guid>(),
+                    Resources = JsonSerializer.Deserialize<List<string>>(g.Resources ?? "[]") ?? new List<string>(),
+                    CategoryColor = g.Task?.Category?.Color ?? "#1890ff",
+                    CategoryName = g.Task?.Category?.Name ?? "默认分类",
+                    CreatedAt = g.CreatedAt,
+                    UpdatedAt = g.UpdatedAt
+                }).ToList();
 
                 _logger.LogInformation("获取甘特图数据成功，用户ID: {UserId}, 数据条数: {Count}", userId, ganttData.Count);
                 return Ok(ApiResponse<List<GanttDataDto>>.SuccessResult(ganttData, $"获取到 {ganttData.Count} 条甘特图数据"));
@@ -116,8 +117,8 @@ namespace ToDoListArea.Controllers
                     StartDate = ganttItem.StartDate,
                     EndDate = ganttItem.EndDate,
                     Progress = ganttItem.Progress,
-                    Dependencies = JsonSerializer.Deserialize<List<Guid>>(ganttItem.Dependencies ?? "[]"),
-                    Resources = JsonSerializer.Deserialize<List<string>>(ganttItem.Resources ?? "[]"),
+                    Dependencies = JsonSerializer.Deserialize<List<Guid>>(ganttItem.Dependencies ?? "[]") ?? new List<Guid>(),
+                    Resources = JsonSerializer.Deserialize<List<string>>(ganttItem.Resources ?? "[]") ?? new List<string>(),
                     CategoryColor = ganttItem.Task?.Category?.Color ?? "#1890ff",
                     CategoryName = ganttItem.Task?.Category?.Name ?? "默认分类",
                     CreatedAt = ganttItem.CreatedAt,
@@ -165,8 +166,8 @@ namespace ToDoListArea.Controllers
                         {
                             UserId = userId,
                             TaskId = task.Id,
-                            StartDate = task.StartTime.Value,
-                            EndDate = task.EndTime.Value,
+                            StartDate = task.StartTime ?? DateTime.Now,
+                            EndDate = task.EndTime ?? DateTime.Now.AddDays(1),
                             Progress = task.CompletionPercentage,
                             Dependencies = "[]",
                             Resources = "[]",
@@ -180,8 +181,8 @@ namespace ToDoListArea.Controllers
                     else
                     {
                         // 更新现有甘特图数据
-                        existingGanttData.StartDate = task.StartTime.Value;
-                        existingGanttData.EndDate = task.EndTime.Value;
+                        existingGanttData.StartDate = task.StartTime ?? DateTime.Now;
+                        existingGanttData.EndDate = task.EndTime ?? DateTime.Now.AddDays(1);
                         existingGanttData.Progress = task.CompletionPercentage;
                         existingGanttData.UpdatedAt = DateTime.UtcNow;
                         updatedCount++;
@@ -239,7 +240,7 @@ namespace ToDoListArea.Controllers
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation("甘特图数据删除成功，ID: {Id}", id);
-                return Ok(ApiResponse<object>.SuccessResult(null, "甘特图数据删除成功"));
+                return Ok(ApiResponse<object>.SuccessResult(new { }, "甘特图数据删除成功"));
             }
             catch (Exception ex)
             {

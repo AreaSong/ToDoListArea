@@ -222,10 +222,7 @@ if (app.Environment.IsDevelopment())
                 var diagnostics = await DatabaseInitializer.GetDatabaseDiagnosticsAsync(context);
                 app.Logger.LogInformation("数据库诊断信息:\n{Diagnostics}", diagnostics);
 
-                // 输出密码哈希（仅开发环境）
-                app.Logger.LogInformation("=== 密码哈希生成器 ===");
-                app.Logger.LogInformation("Qwer1234 的哈希值: {Hash}", ToDoListArea.Tools.PasswordHashGenerator.GenerateHash("Qwer1234"));
-                app.Logger.LogInformation("Admin123! 的哈希值: {Hash}", ToDoListArea.Tools.PasswordHashGenerator.GenerateHash("Admin123!"));
+
             }
             else
             {

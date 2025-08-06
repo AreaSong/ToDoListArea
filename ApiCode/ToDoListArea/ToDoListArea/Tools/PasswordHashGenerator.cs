@@ -30,29 +30,6 @@ namespace ToDoListArea.Tools
             return PasswordHelper.VerifyPassword(password, hash);
         }
 
-        /// <summary>
-        /// 生成常用密码的哈希值（用于测试）
-        /// </summary>
-        public static void GenerateCommonHashes()
-        {
-            var passwords = new[]
-            {
-                "Qwer1234",
-                "Admin123!",
-                "admin123",
-                "123456",
-                "password"
-            };
 
-            Console.WriteLine("=== 密码哈希生成器 ===");
-            foreach (var password in passwords)
-            {
-                var hash = GenerateHash(password);
-                Console.WriteLine($"密码: {password}");
-                Console.WriteLine($"哈希: {hash}");
-                Console.WriteLine($"验证: {VerifyHash(password, hash)}");
-                Console.WriteLine("---");
-            }
-        }
     }
 }

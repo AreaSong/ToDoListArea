@@ -251,7 +251,7 @@ namespace ToDoListArea.Controllers
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation("删除模板成功，模板ID: {TemplateId}", id);
-                return Ok(ApiResponse<object>.SuccessResult(null, "模板删除成功"));
+                return Ok(ApiResponse<object>.SuccessResult(new { }, "模板删除成功"));
             }
             catch (Exception ex)
             {
