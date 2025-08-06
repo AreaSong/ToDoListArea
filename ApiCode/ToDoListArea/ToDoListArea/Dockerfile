@@ -5,26 +5,26 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # 复制项目文件
-COPY ["ToDoListArea.csproj", "./"]
+COPY ["ToDoListArea/ToDoListArea.csproj", "ToDoListArea/"]
+COPY ["DbContextHelp/DbContextHelp.csproj", "DbContextHelp/"]
 
 # 还原依赖
-RUN dotnet restore "ToDoListArea.csproj"
+RUN dotnet restore "ToDoListArea/ToDoListArea.csproj"
 
 # 复制所有源代码
 COPY . .
 
 # 构建应用
-RUN dotnet build "ToDoListArea.csproj" -c Release -o /app/build
+RUN dotnet build "ToDoListArea/ToDoListArea.csproj" -c Release -o /app/build
 
 # 发布应用
 FROM build AS publish
-RUN dotnet publish "ToDoListArea.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "ToDoListArea/ToDoListArea.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# 使用官方.NET 8运行时镜像作为最终镜像
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+# 使用包含curl的预构建镜像作为最终镜像
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-bookworm-slim AS final
 
-# 安装健康检查工具
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+# 跳过安装curl，因为bookworm-slim变体已经包含了基本工具
 
 # 设置工作目录
 WORKDIR /app

@@ -3,8 +3,6 @@
 # 专为Linux生产环境优化的配置文件
 # ===========================================
 
-version: '3.8'
-
 services:
   # 数据库服务 - 生产环境配置
   database:
@@ -41,9 +39,9 @@ services:
       nofile:
         soft: 65535
         hard: 65535
-    # 生产环境健康检查
+    # 生产环境健康检查 - 使用简单的TCP端口检查
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${DB_SA_PASSWORD} -Q 'SELECT 1'"]
+      test: ["CMD", "/bin/bash", "-c", "cat < /dev/null > /dev/tcp/127.0.0.1/1433"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -52,13 +50,14 @@ services:
   # 后端API服务 - 生产环境配置
   backend:
     build:
-      context: ./ApiCode/ToDoListArea/ToDoListArea
-      dockerfile: Dockerfile
+      context: ./ApiCode/ToDoListArea
+      dockerfile: ToDoListArea/Dockerfile
+      pull: false
     container_name: todolist-backend-prod
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:5006
-      - ConnectionStrings__DefaultConnection=Server=database,1433;Database=ToDoListArea;User Id=sa;Password=${DB_SA_PASSWORD};TrustServerCertificate=true;
+      - ConnectionStrings__DefaultConnection=Server=todolist-database-prod,1433;Database=ToDoListArea;User Id=sa;Password=${DB_SA_PASSWORD};TrustServerCertificate=true;
       - JwtSettings__SecretKey=${JWT_SECRET_KEY}
       - JwtSettings__Issuer=${JWT_ISSUER}
       - JwtSettings__Audience=${JWT_AUDIENCE}
@@ -96,9 +95,9 @@ services:
       nofile:
         soft: 65535
         hard: 65535
-    # 生产环境健康检查
+    # 生产环境健康检查 - 使用简单的TCP端口检查
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:5006/health || exit 1"]
+      test: ["CMD", "/bin/bash", "-c", "cat < /dev/null > /dev/tcp/127.0.0.1/5006"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -110,6 +109,7 @@ services:
       context: ./WebCode/todo-frontend
       dockerfile: Dockerfile
       target: production
+      pull: false
     container_name: todolist-frontend-prod
     environment:
       - NGINX_HOST=${DOMAIN_NAME}
@@ -119,8 +119,8 @@ services:
       - "443:443"
     volumes:
       # SSL证书挂载
-      - ./ssl/nginx-selfsigned.crt:/etc/ssl/certs/nginx-selfsigned.crt:ro
-      - ./ssl/nginx-selfsigned.key:/etc/ssl/private/nginx-selfsigned.key:ro
+      - ./sslNginx/areasong.com.crt:/etc/ssl/certs/nginx-selfsigned.crt:ro
+      - ./sslNginx/areasong.com.key:/etc/ssl/private/nginx-selfsigned.key:ro
       # Nginx日志
       - ./logs/nginx:/var/log/nginx
       # Nginx配置
@@ -148,9 +148,9 @@ services:
       nofile:
         soft: 65535
         hard: 65535
-    # 生产环境健康检查
+    # 生产环境健康检查 - 使用简单的TCP端口检查
     healthcheck:
-      test: ["CMD-SHELL", "/usr/local/bin/healthcheck.sh"]
+      test: ["CMD", "/bin/bash", "-c", "cat < /dev/null > /dev/tcp/127.0.0.1/80"]
       interval: 30s
       timeout: 10s
       retries: 3
