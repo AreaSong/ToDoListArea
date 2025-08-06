@@ -27,12 +27,8 @@ builder.Services.AddDbContext<ToDoListAreaDbContext>(options =>
             sqlOptions.CommandTimeout(30);
         });
 
-    // 在开发环境启用敏感数据日志记录
-    if (builder.Environment.IsDevelopment())
-    {
-        options.EnableSensitiveDataLogging();
-        options.EnableDetailedErrors();
-    }
+    // 生产环境配置：禁用敏感数据日志
+    options.EnableSensitiveDataLogging(false);
 });
 
 // 配置JWT设置
@@ -201,57 +197,22 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// 确保数据库已创建（仅在开发环境）
-if (app.Environment.IsDevelopment())
+// 生产环境：确保数据库存在
+using (var scope = app.Services.CreateScope())
 {
-    using (var scope = app.Services.CreateScope())
+    var context = scope.ServiceProvider.GetRequiredService<ToDoListAreaDbContext>();
+    try
     {
-        var context = scope.ServiceProvider.GetRequiredService<ToDoListAreaDbContext>();
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-
-        try
-        {
-            // 使用数据库初始化工具进行全面检查
-            var initSuccess = await DatabaseInitializer.EnsureDatabaseAsync(context, logger);
-
-            if (initSuccess)
-            {
-                app.Logger.LogInformation("数据库初始化检查完成");
-
-                // 输出诊断信息
-                var diagnostics = await DatabaseInitializer.GetDatabaseDiagnosticsAsync(context);
-                app.Logger.LogInformation("数据库诊断信息:\n{Diagnostics}", diagnostics);
-
-
-            }
-            else
-            {
-                app.Logger.LogError("数据库初始化检查失败");
-                app.Logger.LogError("请检查以下项目:");
-                app.Logger.LogError("1. SQL Server Express 服务是否正在运行");
-                app.Logger.LogError("2. 连接字符串是否正确");
-                app.Logger.LogError("3. 是否需要执行数据库初始化脚本");
-                app.Logger.LogError("建议执行: database/secondStep/03_SecurityUpgrade_Migration.sql");
-            }
-        }
-        catch (Exception ex)
-        {
-            app.Logger.LogError(ex, "数据库初始化过程中发生异常: {Message}", ex.Message);
-            app.Logger.LogError("详细错误信息: {Details}", ex.ToString());
-        }
+        await context.Database.EnsureCreatedAsync();
+    }
+    catch (Exception)
+    {
+        // 生产环境下静默处理数据库连接问题
+        // 应通过监控系统检测数据库状态
     }
 }
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "ToDoListArea API V1");
-        c.RoutePrefix = "swagger"; // 设置Swagger UI为 /swagger 路径
-    });
-}
 
 // 使用安全头中间件
 app.UseSecurityHeaders();
@@ -263,15 +224,8 @@ app.UsePerformanceMonitoring();
 // 使用全局异常处理中间件
 app.UseGlobalExceptionHandling();
 
-// 使用CORS - 根据环境选择策略
-if (app.Environment.IsDevelopment())
-{
-    app.UseCors("Development");
-}
-else
-{
-    app.UseCors("Production");
-}
+// 使用生产环境CORS策略
+app.UseCors("Production");
 
 app.UseAuthentication();
 app.UseAuthorization();

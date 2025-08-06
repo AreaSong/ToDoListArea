@@ -59,7 +59,7 @@ namespace ToDoListArea.Services
             report.InvalidStatusCount = report.InvalidStatusTasks.Count;
             report.InvalidPriorityCount = report.InvalidPriorityTasks.Count;
 
-            _logger.LogInformation($"数据一致性检查完成: 总任务数={report.TotalTasks}, 无效状态={report.InvalidStatusCount}, 无效优先级={report.InvalidPriorityCount}");
+            // 数据一致性检查完成
 
             return report;
         }
@@ -120,7 +120,7 @@ namespace ToDoListArea.Services
                 result.Success = true;
                 result.TotalFixed = result.StatusFixes.Count + result.PriorityFixes.Count;
 
-                _logger.LogInformation($"数据一致性修复完成: 状态修复={result.StatusFixes.Count}, 优先级修复={result.PriorityFixes.Count}");
+                // 数据一致性修复完成
             }
             catch (Exception ex)
             {

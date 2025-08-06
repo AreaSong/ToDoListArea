@@ -75,7 +75,7 @@ namespace ToDoListArea.Services
                     UpdatedAt = invitationCode.UpdatedAt
                 };
 
-                _logger.LogInformation("邀请码创建成功: {Code}, 创建者: {CreatedBy}", code, createdBy);
+                // 邀请码创建成功
                 return ServiceResult<InvitationCodeDto>.Success(dto);
             }
             catch (Exception ex)
@@ -214,7 +214,7 @@ namespace ToDoListArea.Services
 
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation("邀请码使用成功: {Code}, 用户: {UserId}", code, userId);
+                // 邀请码使用成功
                 return ServiceResult<bool>.Success(true);
             }
             catch (Exception ex)
@@ -453,7 +453,7 @@ namespace ToDoListArea.Services
                     UpdatedAt = invitationCode.UpdatedAt
                 };
 
-                _logger.LogInformation("邀请码更新成功: {Id}", id);
+                // 邀请码更新成功
                 return ServiceResult<InvitationCodeDto>.Success(dto);
             }
             catch (Exception ex)
@@ -486,7 +486,7 @@ namespace ToDoListArea.Services
                 _context.InvitationCodes.Remove(invitationCode);
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation("邀请码删除成功: {Id}", id);
+                // 邀请码删除成功
                 return ServiceResult<bool>.Success(true);
             }
             catch (Exception ex)
@@ -514,7 +514,7 @@ namespace ToDoListArea.Services
 
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation("邀请码状态更新成功: {Id}, 状态: {Status}", id, invitationCode.Status);
+                // 邀请码状态更新成功
                 return ServiceResult<bool>.Success(true);
             }
             catch (Exception ex)
