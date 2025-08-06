@@ -6,14 +6,11 @@ import {
   Statistic,
   Typography,
   Progress,
-  Table,
   Tag,
-  Space,
   Button
 } from 'antd';
 import {
   UserOutlined,
-  CheckCircleOutlined,
   ClockCircleOutlined,
   SafetyOutlined,
   ReloadOutlined,

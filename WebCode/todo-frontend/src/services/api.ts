@@ -25,7 +25,28 @@ import type {
   AdminUserQuery,
   UpdateUserRoleDto,
   UpdateUserStatusDto,
-  PagedResult
+  PagedResult,
+  UserProfileDetail,
+  UserProfileUpdate,
+  GanttDataItem,
+  GanttDataUpdate,
+  GanttSyncResult,
+  GanttConsistencyCheck,
+  TaskTemplate,
+  TaskTemplateCreate,
+  TaskTemplateUpdate,
+  CreateTaskFromTemplate,
+  TemplateUsageStats,
+  TaskDetail,
+  ChecklistItem,
+  CreateChecklistItem,
+  UpdateChecklistItem,
+  TaskNote,
+  CreateTaskNote,
+  TaskLink,
+  CreateTaskLink,
+  TaskDetailsStats,
+  BatchOperationResult
 } from '../types/api';
 
 // 创建axios实例

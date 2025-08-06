@@ -11,7 +11,6 @@ import {
   Form,
   message,
   Popconfirm,
-  Typography,
   Row,
   Col,
   Statistic,
@@ -23,14 +22,12 @@ import {
   EditOutlined,
   DeleteOutlined,
   ReloadOutlined,
-  CopyOutlined,
-  EyeOutlined
+  CopyOutlined
 } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { invitationCodeApi } from '../../services/api';
 
-const { Title } = Typography;
 const { Option } = Select;
 
 interface InvitationCodeItem {

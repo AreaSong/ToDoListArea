@@ -1,12 +1,11 @@
-import React from 'react';
-import { message, notification, Modal } from 'antd';
+import { Modal } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { NotificationService, ApiErrorHandler } from './notification';
+import { NotificationService } from './notification';
 
 // 扩展现有的通知服务
 export class FeedbackManager extends NotificationService {
   // 操作成功反馈
-  static operationSuccess(operation: string, details?: string) {
+  static operationSuccess(operation: string) {
     return this.success({
       content: `${operation}成功！`,
       duration: 2,
@@ -221,7 +220,7 @@ export class FeedbackManager extends NotificationService {
 // 常用操作的快捷方法
 export const feedback = {
   // 基础操作反馈
-  operationSuccess: (operation: string, details?: string) => FeedbackManager.operationSuccess(operation, details),
+  operationSuccess: (operation: string) => FeedbackManager.operationSuccess(operation),
   operationError: (operation: string, error?: any) => FeedbackManager.operationError(operation, error),
 
   // 任务相关

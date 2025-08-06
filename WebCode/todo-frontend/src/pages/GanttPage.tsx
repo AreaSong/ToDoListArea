@@ -6,14 +6,13 @@ import { Gantt, ViewMode } from 'gantt-task-react';
 import type { Task as GanttTask } from 'gantt-task-react';
 import 'gantt-task-react/dist/index.css';
 import { taskApi, ganttDataApi } from '../services/api';
-import type { Task as ApiTask, User, GanttDataItem, GanttSyncResult, GanttConsistencyCheck } from '../types/api';
+import type { Task as ApiTask, User, GanttDataItem, GanttConsistencyCheck } from '../types/api';
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
 
 const GanttPage: React.FC = () => {
   const [ganttTasks, setGanttTasks] = useState<GanttTask[]>([]);
-  const [ganttData, setGanttData] = useState<GanttDataItem[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.Day);
   const [loading, setLoading] = useState(false);
   const [syncing, setSyncing] = useState(false);
@@ -177,7 +176,6 @@ const GanttPage: React.FC = () => {
     try {
       const response = await ganttDataApi.getGanttData(currentUser.id);
       if (response.success && response.data) {
-        setGanttData(response.data);
         const ganttTasks = convertGanttDataToTasks(response.data);
         setGanttTasks(ganttTasks);
         message.success(`加载了 ${response.data.length} 个甘特图项目`, 2);

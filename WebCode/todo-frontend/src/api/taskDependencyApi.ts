@@ -93,6 +93,7 @@ export const taskDependencyApi = {
     // 这个API需要在后端实现，暂时返回空数组
     // const response = await apiClient.get(`/api/TaskDependency/user/${userId}/summary`);
     // return response.data;
+    console.log(`获取用户 ${userId} 的任务依赖摘要`);
     return [];
   },
 

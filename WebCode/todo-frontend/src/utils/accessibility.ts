@@ -6,7 +6,7 @@
 /**
  * 键盘事件处理工具
  */
-export class KeyboardNavigation {
+class KeyboardNavigation {
   /**
    * 检查是否为回车键或空格键
    */
@@ -97,7 +97,7 @@ export class KeyboardNavigation {
 /**
  * 焦点管理工具
  */
-export class FocusManager {
+class FocusManager {
   private static focusStack: HTMLElement[] = [];
 
   /**
@@ -153,7 +153,7 @@ export class FocusManager {
 /**
  * 屏幕阅读器支持工具
  */
-export class ScreenReaderSupport {
+class ScreenReaderSupport {
   /**
    * 创建屏幕阅读器公告
    */
@@ -226,7 +226,7 @@ export class ScreenReaderSupport {
 /**
  * 颜色对比度检查工具
  */
-export class ColorContrastChecker {
+class ColorContrastChecker {
   /**
    * 计算相对亮度
    */
@@ -283,7 +283,7 @@ export class ColorContrastChecker {
 /**
  * 无障碍性检查工具
  */
-export class AccessibilityChecker {
+class AccessibilityChecker {
   /**
    * 检查图片是否有alt属性
    */

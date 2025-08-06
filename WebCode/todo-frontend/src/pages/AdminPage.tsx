@@ -3,9 +3,6 @@ import {
   Layout, 
   Menu, 
   Card, 
-  Statistic, 
-  Row, 
-  Col, 
   Typography, 
   Spin,
   message,
@@ -13,7 +10,6 @@ import {
   Space
 } from 'antd';
 import {
-  UserOutlined,
   SafetyOutlined,
   BarChartOutlined,
   SettingOutlined,

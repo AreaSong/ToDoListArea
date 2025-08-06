@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   Layout,
   Card,
-  List,
   Button,
   Space,
   message,
@@ -17,8 +16,6 @@ import {
   Spin,
   Timeline,
   Avatar,
-  Tooltip,
-  Divider,
 } from 'antd';
 import {
   ArrowLeftOutlined,
@@ -33,12 +30,11 @@ import {
   LogoutOutlined,
   DashboardOutlined,
   FileTextOutlined,
-  LinkOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { userActivityApi } from '../services/api';
-import type { UserActivity, UserActivityStats, UserActivityQuery, ActivityTypeCount } from '../types/api';
+import type { UserActivity, UserActivityStats, UserActivityQuery } from '../types/api';
 import { ActivityTypes } from '../types/api';
 import { useTheme } from '../contexts/ThemeContext';
 import dayjs from 'dayjs';

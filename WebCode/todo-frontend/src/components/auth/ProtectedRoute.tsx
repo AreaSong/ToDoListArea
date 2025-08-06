@@ -24,7 +24,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requiredPermission,
   redirectTo = '/login'
 }) => {
-  const { user, isAuthenticated, isLoading, hasRole, hasPermission, isAdmin } = useAuth();
+  const { isAuthenticated, isLoading, hasRole, hasPermission, isAdmin } = useAuth();
   const location = useLocation();
 
   // 如果正在加载认证状态，显示加载器

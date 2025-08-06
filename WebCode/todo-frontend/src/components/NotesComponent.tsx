@@ -17,7 +17,6 @@ import {
 import {
   PlusOutlined,
   DeleteOutlined,
-  EditOutlined,
   FileTextOutlined,
   CommentOutlined,
 } from '@ant-design/icons';

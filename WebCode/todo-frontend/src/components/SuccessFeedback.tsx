@@ -56,12 +56,12 @@ const SuccessFeedback: React.FC<SuccessFeedbackProps> = ({
   stats = []
 }) => {
   const [countdown, setCountdown] = useState(autoCloseDelay / 1000);
-  const [showConfetti, setShowConfetti] = useState(false);
-
   useEffect(() => {
     if (visible && type === 'celebration') {
-      setShowConfetti(true);
-      const timer = setTimeout(() => setShowConfetti(false), 3000);
+      // 庆祝动画逻辑可以在这里添加
+      const timer = setTimeout(() => {
+        // 清理庆祝效果
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [visible, type]);

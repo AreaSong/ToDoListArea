@@ -11,11 +11,9 @@ import {
   Input,
   Select,
   DatePicker,
-  message,
   Typography,
   Avatar,
   Dropdown,
-  Empty,
   type MenuProps
 } from 'antd';
 import {
@@ -33,7 +31,7 @@ import {
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { taskApi, categoryApi } from '../services/api';
-import type { Task, TaskCreateDto, TaskCategory, User, TaskStatus, TaskPriority } from '../types/api';
+import type { Task, TaskCreateDto, TaskCategory, TaskStatus, TaskPriority } from '../types/api';
 import { TaskPriorityLabels } from '../types/api';
 import dayjs from 'dayjs';
 import { LoadingSpinner } from '../components/LoadingSpinner';
@@ -171,6 +169,10 @@ const DashboardPage: React.FC = () => {
         }
       } else {
         // 创建任务
+        if (!currentUser?.id) {
+          feedback.operationError('获取任务列表', '用户信息无效，请重新登录');
+          return;
+        }
         const response = await taskApi.createTask(currentUser.id, taskData);
         if (response.success) {
           // 显示成功反馈
@@ -192,7 +194,7 @@ const DashboardPage: React.FC = () => {
   };
 
   // 删除任务
-  const handleDelete = async (taskId: string, taskTitle: string) => {
+  const handleDelete = async (taskId: string) => {
     setTaskToDelete(taskId);
     setConfirmDialogVisible(true);
   };
@@ -356,7 +358,7 @@ const DashboardPage: React.FC = () => {
             type="link"
             danger
             icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record.id, record.title)}
+            onClick={() => handleDelete(record.id)}
           >
             删除
           </Button>

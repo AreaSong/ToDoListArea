@@ -7,8 +7,7 @@ import {
   InboxOutlined,
   SmileOutlined,
   RocketOutlined,
-  BulbOutlined,
-  HeartOutlined
+  BulbOutlined
 } from '@ant-design/icons';
 
 const { Text, Title } = Typography;

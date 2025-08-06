@@ -20,8 +20,6 @@ import {
 } from 'antd';
 import {
   UserOutlined,
-  MailOutlined,
-  PhoneOutlined,
   ArrowLeftOutlined,
   CameraOutlined,
   SettingOutlined,
