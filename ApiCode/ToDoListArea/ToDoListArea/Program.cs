@@ -214,6 +214,17 @@ using (var scope = app.Services.CreateScope())
 
 // Configure the HTTP request pipeline.
 
+// 开发环境配置
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "ToDoListArea API v1");
+        c.RoutePrefix = "swagger";
+    });
+}
+
 // 使用安全头中间件
 app.UseSecurityHeaders();
 
@@ -224,8 +235,15 @@ app.UsePerformanceMonitoring();
 // 使用全局异常处理中间件
 app.UseGlobalExceptionHandling();
 
-// 使用生产环境CORS策略
-app.UseCors("Production");
+// 根据环境使用不同的CORS策略
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors("Development");
+}
+else
+{
+    app.UseCors("Production");
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
