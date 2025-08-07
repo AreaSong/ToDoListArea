@@ -12,6 +12,7 @@
 
 - [API概述](#api概述)
 - [认证授权API](#认证授权api)
+- [邀请码管理API](#邀请码管理api)
 - [任务管理API](#任务管理api)
 - [时间线管理API](#时间线管理api)
 - [提醒系统API](#提醒系统api)
@@ -37,13 +38,14 @@
 - **数据格式**: JSON
 - **字符编码**: UTF-8
 
-### 🎯 已实现控制器清单（13个）
+### 🎯 已实现控制器清单（14个）
 | 控制器 | 路由前缀 | 功能描述 | 端点数量 |
 |--------|---------|----------|----------|
 | **HealthController** | `/Health` | 健康检查和系统状态监控 | 5个 |
 | **MetricsController** | `/Metrics` | 系统指标和性能监控 | 6个 |
 | **UserController** | `/User` | 用户管理和认证系统 | 8个 |
 | **UserProfileController** | `/UserProfile` | 用户配置和个人信息管理 | 7个 |
+| **InvitationCodeController** | `/InvitationCode` | 邀请码管理系统（管理员功能） | 6个 |
 | **TaskController** | `/Task` | 任务核心CRUD和管理功能 | 12个 |
 | **TaskDetailsController** | `/TaskDetails` | 任务详细信息和扩展功能 | 10个 |
 | **TaskCategoryController** | `/TaskCategory` | 任务分类管理系统 | 8个 |
@@ -53,7 +55,7 @@
 | **GanttDataController** | `/GanttData` | 甘特图数据处理和同步 | 8个 |
 | **UserActivityController** | `/UserActivity` | 用户活动跟踪和日志 | 7个 |
 | **DataConsistencyController** | `/DataConsistency` | 数据一致性检查和修复 | 6个 |
-| **总计** | - | **完整的企业级API架构** | **110+个端点** |
+| **总计** | - | **完整的企业级API架构** | **116+个端点** |
 
 ### 认证方式
 - **JWT Token**: 在请求头中携带 `Authorization: Bearer <token>`
@@ -87,11 +89,30 @@
 
 ---
 
-n/v1/auth/profile` | 获取当前用户详细信息 |
-| 更新用户信息 | PUT | `/api/v1/auth/profile` | 更新姓名、头像等信息 |
-| 修改密码 | PUT | `/api/v1/auth/password` | 修改登录密码 |
+## 🔐 认证授权API
 
-> **认证说明**: 除注册、登录、第三方登录外，其他接口都需要在请求头中携带 `Authorization: Bearer <token>`
+### 用户认证接口
+
+| 接口 | 方法 | 路径 | 描述 |
+|------|------|------|------|
+| 用户注册 | POST | `/api/User/register` | 用户注册（需要邀请码） |
+| 用户登录 | POST | `/api/User/login` | 用户登录获取JWT令牌 |
+| 获取用户信息 | GET | `/api/User/profile/{userId}` | 获取当前用户详细信息 |
+| 更新用户信息 | PUT | `/api/User/profile/{userId}` | 更新姓名、头像等信息 |
+
+### 邀请码管理API（管理员专用）
+
+| 接口 | 方法 | 路径 | 描述 |
+|------|------|------|------|
+| 验证邀请码 | POST | `/api/InvitationCode/validate` | 验证邀请码有效性（公开接口） |
+| 创建邀请码 | POST | `/api/InvitationCode` | 创建新的邀请码（管理员） |
+| 获取邀请码列表 | GET | `/api/InvitationCode` | 分页获取邀请码列表（管理员） |
+| 更新邀请码 | PUT | `/api/InvitationCode/{id}` | 更新邀请码状态（管理员） |
+| 删除邀请码 | DELETE | `/api/InvitationCode/{id}` | 删除邀请码（管理员） |
+| 获取使用记录 | GET | `/api/InvitationCode/{id}/usages` | 获取邀请码使用记录（管理员） |
+
+> **认证说明**: 除注册、登录、邀请码验证外，其他接口都需要在请求头中携带 `Authorization: Bearer <token>`
+> **权限说明**: 邀请码管理接口需要管理员角色权限
 
 ### 关键数据结构
 
