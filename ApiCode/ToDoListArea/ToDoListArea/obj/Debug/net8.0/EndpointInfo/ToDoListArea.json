@@ -400,18 +400,6 @@
         }
       }
     },
-    "/api/DataConsistency/debug/check": {
-      "get": {
-        "tags": [
-          "DataConsistency"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/GanttData/user/{userId}": {
       "get": {
         "tags": [
@@ -1207,18 +1195,6 @@
               "type": "string"
             }
           }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Metrics/gc": {
-      "post": {
-        "tags": [
-          "Metrics"
         ],
         "responses": {
           "200": {

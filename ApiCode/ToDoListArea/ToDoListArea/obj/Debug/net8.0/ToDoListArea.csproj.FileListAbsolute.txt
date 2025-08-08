@@ -170,3 +170,4 @@ D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\obj\Debug\net8
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\obj\Debug\net8.0\ToDoListArea.genruntimeconfig.cache
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\obj\Debug\net8.0\ref\ToDoListArea.dll
 D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+D:\indexes\Desktop\ToDoListArea\ApiCode\ToDoListArea\ToDoListArea\bin\Debug\net8.0\appsettings.Development.json

@@ -39,7 +39,7 @@ export const reminderApi = {
    * 获取用户的提醒列表
    */
   getReminders: async (params?: any): Promise<Reminder[]> => {
-    const response = await api.get('/api/Reminder', { params });
+    const response = await api.get('/Reminder', { params });
     return response.data.data?.items || [];
   },
 
@@ -47,7 +47,7 @@ export const reminderApi = {
    * 获取任务的提醒列表
    */
   getTaskReminders: async (taskId: string): Promise<Reminder[]> => {
-    const response = await api.get(`/api/Reminder/task/${taskId}`);
+    const response = await api.get(`/Reminder/task/${taskId}`);
     return response.data || [];
   },
 
@@ -55,7 +55,7 @@ export const reminderApi = {
    * 创建提醒
    */
   createReminder: async (data: CreateReminderRequest): Promise<Reminder> => {
-    const response = await api.post('/api/Reminder', data);
+    const response = await api.post('/Reminder', data);
     return response.data;
   },
 
@@ -63,21 +63,21 @@ export const reminderApi = {
    * 删除提醒
    */
   deleteReminder: async (reminderId: string): Promise<void> => {
-    await api.delete(`/api/Reminder/${reminderId}`);
+    await api.delete(`/Reminder/${reminderId}`);
   },
 
   /**
    * 完成提醒
    */
   completeReminder: async (reminderId: string): Promise<void> => {
-    await api.post(`/api/Reminder/${reminderId}/complete`);
+    await api.post(`/Reminder/${reminderId}/complete`);
   },
 
   /**
    * 获取提醒统计
    */
   getReminderStats: async (): Promise<ReminderStats> => {
-    const response = await api.get('/api/Reminder/stats');
+    const response = await api.get('/Reminder/stats');
     return response.data || {
       totalReminders: 0,
       pendingReminders: 0,

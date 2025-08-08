@@ -201,16 +201,6 @@
   },
   {
     "ContainingType": "ToDoListArea.Controllers.DataConsistencyController",
-    "Method": "DebugCheckDataConsistency",
-    "RelativePath": "api/DataConsistency/debug/check",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ToDoListArea.Controllers.DataConsistencyController",
     "Method": "FixDataConsistency",
     "RelativePath": "api/DataConsistency/fix",
     "HttpMethod": "POST",
@@ -668,16 +658,6 @@
         "StatusCode": 200
       }
     ]
-  },
-  {
-    "ContainingType": "ToDoListArea.Controllers.MetricsController",
-    "Method": "TriggerGarbageCollection",
-    "RelativePath": "api/Metrics/gc",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
   },
   {
     "ContainingType": "ToDoListArea.Controllers.MetricsController",

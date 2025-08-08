@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
 import { NotificationService, handleApiError, handleApiSuccess } from '../utils/notification';
+import api from '../services/api';
 
 // 内联类型定义，避免导入问题
 interface Reminder {
@@ -35,14 +35,7 @@ interface ReminderStats {
   weekReminders: number;
 }
 
-// API基础URL
-const API_BASE_URL = 'http://localhost:5006';
-
-// 创建axios实例
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 10000,
-});
+// 统一复用全局axios实例，基于 VITE_API_BASE_URL 或 '/api'
 
 // 添加请求拦截器
 api.interceptors.request.use((config) => {
@@ -85,7 +78,7 @@ export const useReminders = (taskId?: string) => {
     
     try {
       console.log('获取任务提醒，taskId:', taskId);
-      const response = await api.get(`/api/Reminder/task/${taskId}`);
+      const response = await api.get(`/Reminder/task/${taskId}`);
       const data = response.data;
       
       console.log('提醒数据获取成功:', data);
@@ -103,7 +96,7 @@ export const useReminders = (taskId?: string) => {
   const fetchStats = useCallback(async () => {
     try {
       console.log('获取提醒统计');
-      const response = await api.get('/api/Reminder/stats');
+      const response = await api.get('/Reminder/stats');
       const data = response.data;
       
       console.log('统计数据获取成功:', data);
@@ -121,7 +114,7 @@ export const useReminders = (taskId?: string) => {
     
     try {
       console.log('创建提醒:', reminderData);
-      const response = await api.post('/api/Reminder', reminderData);
+      const response = await api.post('/Reminder', reminderData);
       const newReminder = response.data;
       
       console.log('提醒创建成功:', newReminder);
@@ -150,7 +143,7 @@ export const useReminders = (taskId?: string) => {
     
     try {
       console.log('删除提醒:', reminderId);
-      await api.delete(`/api/Reminder/${reminderId}`);
+      await api.delete(`/Reminder/${reminderId}`);
       
       console.log('提醒删除成功');
       setReminders(prev => prev.filter(r => r.id !== reminderId));
@@ -176,7 +169,7 @@ export const useReminders = (taskId?: string) => {
     
     try {
       console.log('完成提醒:', reminderId);
-      await api.post(`/api/Reminder/${reminderId}/complete`);
+      await api.post(`/Reminder/${reminderId}/complete`);
       
       console.log('提醒完成成功');
       // 更新本地状态

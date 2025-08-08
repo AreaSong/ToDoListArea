@@ -10,7 +10,7 @@ namespace ToDoListArea.Controllers
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")] // 仅管理员可访问
+[Authorize(Roles = "admin")] // 仅管理员可访问（统一为小写，与User.Role默认存储一致）
     public class MetricsController : ControllerBase
     {
         private readonly IMetricsService _metricsService;
